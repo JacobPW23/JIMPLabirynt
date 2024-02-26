@@ -1,6 +1,5 @@
 #ifndef _LIST_H_
 #define _LIST_H_
-#endif
 #include <stdio.h>
 typedef struct elem{
 int i;
@@ -11,3 +10,4 @@ List removeFromList(List l,int i);
 List getListElem(List l ,int i);
 void freeList(List l);
 void printList(List l);
+#endif

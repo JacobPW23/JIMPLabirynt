@@ -6,6 +6,10 @@
 
 int assembleGraph(Graph g,char * filename){
 FILE* file=fopen(filename,"r");
+if(file==NULL){
+
+	return 1;
+}
 int x=1;
 char curr [MAX_LINE_SIZE] ;
 char prev [MAX_LINE_SIZE];

@@ -1,7 +1,7 @@
 CC=gcc
 COPT= -ggdb -Wall -ansi -std=c99
 
-./bin/maze: ./src/main.o ./src/Maze.o ./src/Graph.o ./src/List.o
+./bin/maze: ./src/main.o ./src/Maze.o ./src/MazeSolver.o ./src/Graph.o ./src/List.o
 	$(CC) $(COPT) ./src/main.o ./src/Maze.o ./src/Graph.o ./src/List.o -o $@
 graphtest:
 	$(CC) $(COPT) -c ./src/graphTest.c ./src/Graph.c ./src/List.c
@@ -18,6 +18,6 @@ list_test:
 ./src/Graph.o: ./src/Graph.c
 ./src/Maze.o: ./src/Maze.c
 ./src/List.o: ./src/List.c
-
+./src/MazeSolver.o: ./src/MazeSolver.c
 clean:
-	rm src/*.o
+	rm ./src/*.o ./bin/maze
