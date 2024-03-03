@@ -43,6 +43,8 @@ Graph initGraph(void){
 
 
 	g->size=10;
+	g->start=-1;
+	g->end=-1;
 	return g;
 }
 

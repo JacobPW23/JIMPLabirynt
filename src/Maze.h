@@ -4,4 +4,6 @@
 #include <stdlib.h>
 #include "MazeSolver.h"
 int assembleGraph(Graph g,char * filename);
+void printVertToStream(FILE * stream,Graph g);
+int* readVertFromStream(char * filename,int n);
 #endif
