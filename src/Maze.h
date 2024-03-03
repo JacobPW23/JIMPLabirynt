@@ -4,4 +4,5 @@
 #include <stdlib.h>
 #include "MazeSolver.h"
 int assembleGraph(Graph g,char * filename);
+void wypisz(Stack *stack, Graph graph);
 #endif
