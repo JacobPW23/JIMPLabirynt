@@ -194,13 +194,14 @@ void printVertToStream(FILE * stream,Graph g){
 }
 
 int* readVertFromStream(char* filename,int n){
+	
 	FILE * stream=fopen(filename,"r");
 	if(stream==NULL){
 
 	return NULL;
 	}	
 	char tmp [100];int dummy;
-	for(int i=0;i<n;i++){
+	for(int i=0;i<=n;i++){
 		fgets(tmp,100,stream);
 	
 	}
