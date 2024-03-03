@@ -46,6 +46,8 @@ int main(int argc,char** argv){
 		return 1;	
 		}
 		if(assembleGraph(gr,maze_file)!=0){
+			fclose(out);
+			freeGraph(gr);
 			return 1;
 		}
 		printVertToStream(out,gr);
