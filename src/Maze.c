@@ -30,7 +30,8 @@ do
 			if(se<=184 ){
 				//we've got a pleasure with crossroads
 				addVert(g,i,x);
-				establishNeighbourhood(g,g->n-2,g->n-1);
+				if(curr[i-1]==' ')
+					establishNeighbourhood(g,g->n-2,g->n-1);
 				if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
 					establishNeighbourhood(g,g->n-1,tmp);
