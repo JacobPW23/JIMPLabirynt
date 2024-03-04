@@ -12,22 +12,25 @@ int main(int argc,char** argv){
 		switch(c){
 
 			case 'h':{
-					printf("Graph format maze preprocesor\n");
-					printf("Options:\n");
-					printf("m - maze txt filename\n");
-					printf("f - result graph format filename\n");
-					printf("h - help\n");
+					printf("Preprocesor formatujący labirynt do postaci grafu\n");
+					printf("Opcje:\n");
+					printf("m - nazwa pliku z labiryntem w formacie pierwotnym\n");
+					printf("f - nazwa pliku zawierającego graf opisujący labirynt\n");
+					printf("h - pomoc\n");
+					break;
 				 }
 			case 'm':
 				 {
 
 					maze_file=optarg;
+					break;
 					
 
 				 }
 			case 'f':{
 
 					format_file=optarg;
+					break;
 				 }
 
 			
@@ -37,10 +40,6 @@ int main(int argc,char** argv){
 	}
 	if(maze_file!=NULL && format_file!=NULL){
 		FILE* out=fopen(format_file,"w");
-		if(out==NULL){
-			printf("Reading from file imposibble");
-			return 1;
-		}
 		Graph gr;
 		if(( gr=initGraph())==NULL){
 		return 1;	

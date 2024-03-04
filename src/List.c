@@ -7,6 +7,7 @@ List addToList(List l,int i){
 		List new;
 		if((new=malloc(sizeof (*new)))==NULL){
 			freeList(l);
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
 		}
 		new->i=i;
@@ -22,6 +23,7 @@ List addToList(List l,int i){
 	List new;
 	if((new=malloc(sizeof (*new)))==NULL){
 		freeList(l);
+		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
 	}
 	new->i=i;

@@ -14,11 +14,7 @@ list_test:
 	$(CC) $(COPT)  list_test.o ./src/List.o -o $@
 	./$@
 	rm $@ *.o
-bittest:
-	$(CC) $(COPT) -c ./src/bittest.c
-	$(CC) $(COPT)   bittest.o -o $@
 	
-	rm *.o
 ./src/main.o: ./src/main.c
 ./src/main.o: ./src/main.c
 ./src/Graph.o: ./src/Graph.c
@@ -27,4 +23,4 @@ bittest:
 ./src/MazeSolver.o: ./src/MazeSolver.c
 ./src/format.o: ./src/format.c
 clean:
-	rm ./src/*.o ./bin/maze
+	rm ./src/*.o ./bin/*
