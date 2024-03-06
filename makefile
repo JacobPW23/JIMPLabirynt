@@ -13,9 +13,9 @@ FLAGS= -g -Wall
 	$(CC) $(FLAGS) -c ./src/List.c -o ./src/List.o
 ./src/MazeSolver.o: ./src/MazeSolver.c ./src/Graph.c
 	$(CC) $(FLAGS) -c ./src/MazeSolver.c -o ./src/MazeSolver.o
-./src/format.o: ./src/format.c
+format: ./src/format.o ./src/Maze.o ./src/Graph.o ./src/List.o
+	$(CC) $(FLAGS) ./src/format.o ./src/Maze.o ./src/Graph.o ./src/List.o -o ./bin/format
+./src/format.o: 
 	$(CC) $(FLAGS) -c ./src/format.c -o ./src/format.o
-format: ./src/format.o ./src/Graph.o ./src/Maze.o ./src/List.o
-	$(CC) $(FLAGS) ./src/format.o  ./src/Maze.o ./src/Graph.o ./src/List.o -o ./bin/format
 clean:
 	rm ./src/*.o ./bin/maze
