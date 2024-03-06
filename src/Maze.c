@@ -3,11 +3,14 @@
 #include <string.h>
 #include "Maze.h"
 #define MAX_LINE_SIZE 2050
+#define CROSSCODE 184
+#define TURNCODE 240
+#define DEADENDCODE 296
 
 int assembleGraph(Graph g,char * filename){
 FILE* file=fopen(filename,"r");
 if(file==NULL){
-
+	fprintf(stderr,"Błąd 1 Plik \"%s\" nie istnieje lub nie można go otworzyć\n",filename);
 	return 1;
 }
 int x=1;
@@ -24,10 +27,10 @@ do
 {
 	
 	for(int i=1;i<strlen(curr)-1;i++){
-		if(curr[i]==32){
+		if(curr[i]==' '){
 
 		 	int se=(int)(curr[i-1]+curr[i+1]+prev[i]+nxt[i]);
-			if(se<=184 ){
+			if(se<=CROSSCODE ){
 				//we've got a pleasure with crossroads
 				addVert(g,i,x);
 				if(curr[i-1]==' ')
@@ -39,10 +42,13 @@ do
 
 				}	
 				if(nxt[i]==' '){
-					l=addToList(l,g->n-1);	
+					if((l=addToList(l,g->n-1))==NULL){
+
+						return 1;
+					}	
 				}
 			}
-			else if(se==296){
+			else if(se==DEADENDCODE){
 			//we've got a pleasure with a "dead end"
 			addVert(g,i,x);
 			if(prev[i]==' '){
@@ -59,11 +65,13 @@ do
 				establishNeighbourhood(g,g->n-2,g->n-1);
 			}
 			else if(nxt[i]==' '){
-				l=addToList(l,g->n-1);
+				if((l=addToList(l,g->n-1))==NULL){
+					return 1;
+				}
 
 			}
 			}
-			else if(prev[i]!=nxt[i]&&curr[i-1]!=curr[i+1]&& se==240)
+			else if(prev[i]!=nxt[i]&&curr[i-1]!=curr[i+1]&& se==TURNCODE)
 			{
 				//we've got a pleasure with 90 degree turn
 				if(nxt[i]==' '){
@@ -71,13 +79,17 @@ do
 					if(curr[i+1]==' '){
 
 						addVert(g,i,x);
-						l=addToList(l,g->n-1);
+						if((l=addToList(l,g->n-1))==NULL){
+							return 1;
+						}
 						
 					}
 					else{
 						addVert(g,i,x);
 						establishNeighbourhood( g,g->n-2,g->n-1);
-						l=addToList(l,g->n-1);
+						if((l=addToList(l,g->n-1))==NULL){
+							return 1;
+						}
 					}
 				}
 				else{
@@ -103,8 +115,11 @@ do
 					
 					addVert(g,i,x);
 					g->start=g->n-1;
-					if(nxt[i]==' ')
-						l=addToList(l,g->n-1);
+					if(nxt[i]==' '){
+						if((l=addToList(l,g->n-1))==NULL)
+							return 1;
+						
+					}
 				}
 				else{
 					addVert(g,i,x);
@@ -193,9 +208,8 @@ void printVertToStream(FILE * stream,Graph g){
 	}
 }
 
-int* readVertFromStream(char* filename,int n){
+int* readVertFromStream(FILE * stream,int n){
 	
-	FILE * stream=fopen(filename,"r");
 	if(stream==NULL){
 
 	return NULL;
@@ -205,19 +219,49 @@ int* readVertFromStream(char* filename,int n){
 		fgets(tmp,100,stream);
 	
 	}
-	fclose(stream);
+	rewind(stream);
 	int* vert;
 		if((vert=malloc(5 * sizeof*vert))==NULL){
-
+			fprintf(stderr,"Zabrakło pamięci na dalsze procedowanie rozwiązania\n");
 			return NULL;
 
 	}
 	memset(vert,-1,4*sizeof*vert);
 	if(sscanf(tmp,"%d %d %d %d %d %d %d",&dummy,&dummy,vert,vert+1,vert+2,vert+3,vert+4)<3){
 		free(vert);
+		fprintf(stderr,"Niepoprawna liczba elementów w linii %d w pliku\n",n);
 		return NULL;
 	
 	}	
 	return vert;
+}
+
+int validFile(FILE * file){
+	char buff [MAX_LINE_SIZE];int x=1;
+	fgets(buff,MAX_LINE_SIZE,file);
+	int l= strlen(buff);
+	do
+	{
+		if(strlen(buff)!=l){
+			fprintf(stderr,"Błąd 2 Nieprawidłowy format pliku. Liczby znaków w liniach %d i %d nie są równe.\n",x-1,x);	
+			return 1;
+
+		}
+		for(int i=0;i<strlen(buff)-1;i++){
+
+			if(buff[i]!=' ' && buff[i]!='X' && buff[i]!='P' && buff[i]!='K')
+			{
+				fprintf(stderr,"Błąd 0 Nieznany znak \'%c\' w linii %d, kolumna %d.\n",buff[i],x,i);
+				return 2; 
+	
+			}
+
+		}
+		x++;
+		
+	}
+	while(fgets(buff,MAX_LINE_SIZE,file)!=NULL);
+	rewind(file);
+	return 0;
 }
 

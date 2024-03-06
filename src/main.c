@@ -2,13 +2,45 @@
 #include <stdio.h>
 #include<stdlib.h>
 #include "MazeSolver.h"
-int main(int argc,char** argv){
+#include <unistd.h>
 
-	if(argc>1){
-		Graph gr;
-		if(( gr=initGraph())==NULL){
-		return 1;	
+int main(int argc,char** argv){
+	int c;
+	char* graph_file=NULL;
+	while((c=getopt(argc,argv,"hs:"))!=-1)
+	{
+
+		switch(c){
+
+			case 'h':{
+					printf("Rozwiązywanie labiryntu w formacie grafu\n");
+					printf("Opcje:\n");
+					printf("s - plik grafu opisującego labirynt\n");
+					printf("h - pomoc\n");
+					break;
+				 }
+			case 's':
+				 {
+
+					graph_file=optarg;
+					break;
+					
+
+				 }
+
+			
 		}
+	}	
+
+		if(graph_file!=NULL){
+                FILE* out=fopen(graph_file,"w");
+                if(out==NULL){
+                fprintf(stderr,"Błąd 1 Nie udało się otworzyć pliku lub plik nie istnieje.\n");
+
+                }
+                fclose(out);
+        	}	
+
 		if(assembleGraph(gr,argv[1])!=0){
 			return 1;
 		}
@@ -28,6 +60,9 @@ int main(int argc,char** argv){
 	}
 	else
 		printf("Podaj nazwe pliku!\n");
+
+
+	
 
 return 0;
 }

@@ -7,11 +7,13 @@
 Graph initGraph(void){
 	Graph g;
 	if((g=malloc(sizeof *g))==NULL){
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
 
 	}
 	if((g->cords=malloc(20*sizeof (*g->cords)))==NULL){
   		free(g);
+		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
   		return NULL;
 
 	}
@@ -19,6 +21,7 @@ Graph initGraph(void){
 	if((g->neighbours=malloc(10*sizeof (*g->neighbours)))==NULL){
 		free(g->cords);
 		free(g);
+		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
 	}
 	g->n=0;
@@ -33,6 +36,7 @@ Graph initGraph(void){
 			free(g->neighbours);
 			free(g->cords);
 			free(g);
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
 		}
 
@@ -61,6 +65,7 @@ int initNeighbourTable(Graph g,int begin,int end){
 			free(g->neighbours);
 			free(g->cords);
 			free(g);
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 		}
 
@@ -111,14 +116,17 @@ int addVert(Graph g,int x,int y){
 		//we have to increase structure memory
 		if((g->cords=realloc(g->cords,4*g->size*sizeof (*g->cords)))==NULL){
 			freeGraph(g);
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 				}
 		if((g->neighbours=realloc(g->neighbours,2*g->size*sizeof (*g->neighbours)))==NULL){
 			freeGraph(g);
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 				}
 		if(initNeighbourTable(g,g->size,g->size*2)==1){
 			freeGraph(g);
+			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 		}
 		g->size*=2;
@@ -127,7 +135,7 @@ int addVert(Graph g,int x,int y){
 		g->n++;
 		return 0;
 	}
-	return -1;
+	return 0;
 
 }
 

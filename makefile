@@ -18,4 +18,4 @@ format: ./src/format.o ./src/Maze.o ./src/Graph.o ./src/List.o
 ./src/format.o: 
 	$(CC) $(FLAGS) -c ./src/format.c -o ./src/format.o
 clean:
-	rm ./src/*.o ./bin/maze
+	rm ./src/*.o ./bin/*
