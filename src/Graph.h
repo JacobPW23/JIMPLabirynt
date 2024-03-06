@@ -7,6 +7,8 @@ int* cords;
 int** neighbours;
 int n;
 int size;
+int start;
+int end;
 }*Graph;
 Graph initGraph();
 int initNeighbourTable(Graph g,int begin,int end);

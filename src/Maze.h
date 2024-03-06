@@ -5,4 +5,6 @@
 #include "MazeSolver.h"
 int assembleGraph(Graph g,char * filename);
 void wypisz(Stack *stack, Graph graph);
+void printVertToStream(FILE * stream,Graph g);
+int* readVertFromStream(char * filename,int n);
 #endif

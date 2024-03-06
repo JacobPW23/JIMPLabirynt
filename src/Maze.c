@@ -57,6 +57,10 @@ do
 
 				establishNeighbourhood(g,g->n-2,g->n-1);
 			}
+			else if(nxt[i]==' '){
+				l=addToList(l,g->n-1);
+
+			}
 			}
 			else if(prev[i]!=nxt[i]&&curr[i-1]!=curr[i+1]&& se==240)
 			{
@@ -90,19 +94,21 @@ do
 					}
 					}
 			}
-			else if((curr[i-1]=='P' || curr[i+1]=='K')&& prev[i]!=nxt[i]){
+			else if((curr[i-1]=='P' || curr[i+1]=='K')){
 
 				//we've got a pleasure with start/end vertice in default maze configuration location
 				//other locations will be served in previous code cases
 				if(curr[i-1]=='P'){
-
+					
 					addVert(g,i,x);
+					g->start=g->n-1;
 					if(nxt[i]==' ')
 						l=addToList(l,g->n-1);
 				}
 				else{
+					addVert(g,i,x);
+					g->end=g->n-1;
 					if(curr[i-1]==' '){
-						addVert(g,i,x);
 						establishNeighbourhood( g,g->n-2,g->n-1);
 						if(prev[i]==' '){
 						int tmp;
@@ -165,7 +171,51 @@ void wypisz(Stack *stack, Graph graph)
         else 
             printf("Błąd\n");
 
-        temp=temp->next;
-    }
-   
-}   
+	temp=temp->next;
+	}
+}
+void printVertToStream(FILE * stream,Graph g){
+	for(int i=0;i<g->n;i++){
+		fprintf(stream,"%d %d",g->cords[2*i],g->cords[2*i+1]);
+		for(int j=0;j<4;j++){
+			fprintf(stream," %d", g->neighbours[i][j]);
+
+		}
+		if(i==g->start){
+			fprintf(stream," %d",1);
+		}
+		else if(i==g->end)
+			fprintf(stream," %d",2);
+		else
+			fprintf(stream," %d",0);
+		fprintf(stream,"\n");
+	}
+}
+
+int* readVertFromStream(char* filename,int n){
+	FILE * stream=fopen(filename,"r");
+	if(stream==NULL){
+
+	return NULL;
+	}	
+	char tmp [100];int dummy;
+	for(int i=0;i<n;i++){
+		fgets(tmp,100,stream);
+	
+	}
+	fclose(stream);
+	int* vert;
+		if((vert=malloc(5 * sizeof*vert))==NULL){
+
+			return NULL;
+
+	}
+	memset(vert,-1,4*sizeof*vert);
+	if(sscanf(tmp,"%d %d %d %d %d %d %d",&dummy,&dummy,vert,vert+1,vert+2,vert+3,vert+4)<3){
+		free(vert);
+		return NULL;
+	
+	}	
+	return vert;
+}
+
