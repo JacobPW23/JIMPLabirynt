@@ -21,9 +21,10 @@ int push(Stack *stack, int node);
 int pop(Stack *stack);
 void reverse(Stack *stack);
 void insertAtBottom(Stack *stack, int node); 
-int visitNode(Graph graph, int node, int end, int *visited, Stack *stack);
-void solve(Graph graph, int start, int end, int *visited, Stack *stack);
+int visitNode(FILE *plik, int node, int end, int *visited, Stack *stack);
+void solve(FILE *plik, int start, int end, int *visited, Stack *stack);
 void printStack(Stack *stack);
 void freeStack(Stack *stack);
 
 #endif
+
