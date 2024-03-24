@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Graph.h"
-
+#define MAX_LINE_SIZE 2050
+#define CROSSCODE 184
+#define TURNCODE 240
+#define DEADENDCODE 296
+#define MAX_LINE_SIZE 2050
 
 Graph initGraph(void){
 	Graph g;
@@ -52,6 +56,37 @@ Graph initGraph(void){
 	return g;
 }
 
+Graph createGraph(int n)
+{
+	Graph gr=malloc(sizeof(*gr));
+	if(gr==NULL)
+	{
+		free(gr);
+		fprintf(stderr, "Nie udało się stworzyć grafu\n");
+		return NULL;
+	}
+	gr->n=n;
+	gr->cords=malloc(2*n*sizeof(int));
+	gr->neighbours=malloc(n*sizeof(int*));
+	if(gr->neighbours==NULL)
+	{
+		free(gr->neighbours);
+		fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów\n");
+		return NULL;
+	}
+	for(int i=0;i<n;i++)
+	{
+		gr->neighbours[i]=malloc(4*sizeof(int));
+		if(gr->neighbours[i]==NULL)
+		{
+			free(gr->neighbours[i]);
+			fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów wierzchołka\n");
+			return NULL;
+		}
+	}
+	
+	return gr;	
+}
 
 int initNeighbourTable(Graph g,int begin,int end){
 
@@ -147,8 +182,6 @@ void freeGraph(Graph g){
  	}
  	free(g->neighbours);
  	free(g);
-
-
 }
 
 
@@ -186,3 +219,156 @@ void printGraph(Graph g){
 
 
 }
+
+int assembleGraph(Graph g,char * filename){
+FILE* file=fopen(filename,"r");
+if(file==NULL){
+        fprintf(stderr,"Błąd 1 Plik \"%s\" nie istnieje lub nie można go otworzyć\n",filename);
+        return 1;
+}
+int x=1;
+char curr [MAX_LINE_SIZE] ;
+char prev [MAX_LINE_SIZE];
+char nxt [MAX_LINE_SIZE];
+List l=NULL;
+int tmp=-1;
+
+fgets(prev,MAX_LINE_SIZE,file);
+fgets(curr,MAX_LINE_SIZE,file);
+fgets(nxt,MAX_LINE_SIZE,file);
+do
+{
+
+        for(int i=1;i<strlen(curr)-1;i++){
+                if(curr[i]==' '){
+
+                        int se=(int)(curr[i-1]+curr[i+1]+prev[i]+nxt[i]);
+                        if(se<=CROSSCODE ){
+                                addVert(g,i,x);
+                                if(curr[i-1]==' ')
+                                        establishNeighbourhood(g,g->n-2,g->n-1);
+                                if((tmp=browseBuforedNumber(l,g,i))!=-1){
+
+                                        establishNeighbourhood(g,g->n-1,tmp);
+                                        l=removeFromList(l,tmp);
+
+                                }
+                                if(nxt[i]==' '){
+                                        if((l=addToList(l,g->n-1))==NULL){
+
+                                                return 1;
+                                        }
+                                }
+                        }
+                        else if(se==DEADENDCODE){
+                        addVert(g,i,x);
+                        if(prev[i]==' '){
+                                if((tmp=browseBuforedNumber(l,g,i))!=-1){
+
+                                        establishNeighbourhood(g,g->n-1,tmp);
+                                        l=removeFromList(l,tmp);
+
+                                }
+
+                        }
+                        else if(curr[i-1]==' '){
+
+                                establishNeighbourhood(g,g->n-2,g->n-1);
+                        }
+                        else if(nxt[i]==' '){
+                                if((l=addToList(l,g->n-1))==NULL){
+                                        return 1;
+                                }
+
+                        }
+                        }
+                        else if(prev[i]!=nxt[i]&&curr[i-1]!=curr[i+1]&& se==TURNCODE)
+                        {
+                                if(nxt[i]==' '){
+
+                                        if(curr[i+1]==' '){
+
+                                                addVert(g,i,x);
+                                                if((l=addToList(l,g->n-1))==NULL){
+                                                        return 1;
+                                                }
+
+                                        }
+                                        else{
+                                                addVert(g,i,x);
+                                                establishNeighbourhood( g,g->n-2,g->n-1);
+                                                if((l=addToList(l,g->n-1))==NULL){
+                                                        return 1;
+                                                }
+                                        }
+                                }
+                                else{
+
+                                        if(prev[i]==' '){
+                                                addVert(g,i,x);
+                                                if((tmp=browseBuforedNumber(l,g,i))!=-1){
+
+                                                        establishNeighbourhood(g,g->n-1,tmp);
+                                                        l=removeFromList(l,tmp);
+
+                                                }
+                                        if(curr[i-1]==' ')
+                                                establishNeighbourhood( g,g->n-2,g->n-1);
+                                        }
+                                        }
+                        }
+                        else if((curr[i-1]=='P' || curr[i+1]=='K')){
+
+                                if(curr[i-1]=='P'){
+
+                                        addVert(g,i,x);
+                                        g->start=g->n-1;
+                                        if(nxt[i]==' '){
+                                                if((l=addToList(l,g->n-1))==NULL)
+                                                        return 1;
+
+                                        }
+                                }
+                                else{
+                                        addVert(g,i,x);
+                                        g->end=g->n-1;
+                                        if(curr[i-1]==' '){
+                                                establishNeighbourhood( g,g->n-2,g->n-1);
+                                                if(prev[i]==' '){
+                                                int tmp;
+                                                if((tmp=browseBuforedNumber(l,g,i))!=-1){
+
+                                                        establishNeighbourhood(g,g->n-1,tmp);
+                                                        l=removeFromList(l,tmp);
+
+                                                }
+
+                                                }
+                                        }
+                                        else{
+                                                int tmp;
+                                                if((tmp=browseBuforedNumber(l,g,i))!=-1){
+
+                                                        establishNeighbourhood(g,g->n-1,tmp);
+                                                        l=removeFromList(l,tmp);
+
+                                                }
+                                        }
+
+
+                                }
+                        }
+
+                }
+        }
+
+        strcpy(prev,curr);
+        strcpy(curr,nxt);x++;
+}
+while(fgets(nxt,MAX_LINE_SIZE,file)!=NULL);
+fclose(file);
+freeList(l);
+return 0;
+
+}
+
