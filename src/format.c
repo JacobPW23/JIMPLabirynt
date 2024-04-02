@@ -1,5 +1,4 @@
 #include "MazeReader.h"
-#include "Graph.h"
 #include <stdio.h>
 #include<stdlib.h>
 #include <unistd.h>
@@ -41,6 +40,9 @@ int main(int argc,char** argv){
 	}
 	if(maze_file!=NULL && format_file!=NULL){
 		FILE* out=fopen(format_file,"w");
+		if(out==NULL){
+			return 1;
+		}
 		Graph gr;
 		if(( gr=initGraph())==NULL){
 		return 1;	

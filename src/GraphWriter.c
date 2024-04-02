@@ -7,9 +7,9 @@
 void printVertToStream(FILE * stream,Graph g){
         fprintf(stream, " %d %d\n", g->start, g->end);
         for(int i=0;i<g->n;i++){
-                fprintf(stream,"%d %d",g->cords[2*i],g->cords[2*i+1]);
+                fprintf(stream,"%d %d",g->coords[2*i],g->coords[2*i+1]);
                 for(int j=0;j<4;j++){
-                        fprintf(stream," %d", g->neighbours[i][j]);
+                        fprintf(stream," %d", g->neighbors[i][j]);
 
                 }
                 fprintf(stream, "\n");

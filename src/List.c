@@ -61,14 +61,14 @@ return l;
 
 List getListElem(List l,int i){
 
-List e=l;
-while(e!=NULL && e->i!=i){
-e=e->nxt;
+	List e=l;
+	while(e!=NULL && e->i!=i){
+		e=e->nxt;
 
-}
-return e;
+	}
+	return e;
 
-}
+	}
 void freeList(List l){
 List tmp;
 while(l!=NULL){

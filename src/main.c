@@ -1,12 +1,10 @@
-#include "Maze.h"
 #include "Solution.h"
 #include "MazeSolver.h"
 #include "ShowSolution.h"
 #include "MazeReader.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include<stdlib.h>
 #include <unistd.h>
-
 int main(int argc,char** argv){
 	int c;
 	char* graph_file=NULL;
@@ -30,6 +28,7 @@ int main(int argc,char** argv){
 					
 
 				 }
+			default: c='h'; break;
 
 			
 		}
@@ -37,14 +36,7 @@ int main(int argc,char** argv){
 
 	}
 	if(graph_file!=NULL){
-		FILE* out=fopen(graph_file,"w");
-		if(out==NULL){
-			fprintf(stderr,"Błąd 1 Nie udało się otworzyć pliku lub plik nie istnieje.\n");
-			return 1;
-		}
-		fclose(out);
-	
-
+		FILE* plik=fopen(graph_file,"r");
 		int n=vertNum(plik);
 		Graph gr=createGraph(n);
 		printf("Wczytano graf\n");
@@ -63,9 +55,11 @@ int main(int argc,char** argv){
 		freeGraph(gr);
 		freeStack(stack);
 		fclose(plik);
+		free(visited);
 	}
 	else
 		printf("Podaj nazwe pliku!\n");
+
 
 
 	

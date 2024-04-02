@@ -44,7 +44,7 @@ int readGraphFromFile(FILE *plik, Graph graph)
 	
 	for(int i=0; fgets(buff, 2050, plik)!=NULL; i++)
 	{
-		if(sscanf(buff, "%d %d %d %d %d %d", &graph->cords[2*i], &graph->cords[2*i+1], &graph->neighbours[i][0],&graph->neighbours[i][1], &graph->neighbours[i][2], &graph->neighbours[i][3])!=6)
+		if(sscanf(buff, "%d %d %d %d %d %d", &graph->coords[2*i], &graph->coords[2*i+1], &graph->neighbors[i][0],&graph->neighbors[i][1], &graph->neighbors[i][2], &graph->neighbors[i][3])!=6)
 		{
 			fprintf(stderr, "Nie udało się wczytać wierzchołków z bufora\n");
 			return 3;
