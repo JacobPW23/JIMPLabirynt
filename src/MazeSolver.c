@@ -31,14 +31,19 @@ int visitNode(Graph graph, int node, int end, int *visited, Stack *stack)
     return 0;
 }
 
-void solve(Graph graph, int start, int end, int *visited, Stack *stack)
+void solve(Graph graph, Stack *stack)
 {
+	int* visited=malloc(graph->n*sizeof*visited);
+	int start=graph->start;
+	int end=graph->end;
     for(int i=0;i<graph->n;i++)
     {
 	    visited[i]=0;
     }
 
     visitNode(graph, start, end, visited, stack);
+    free(visited);
+    reverse(stack);
 }
 
 int getEdge(Graph g, int n,int m){
@@ -89,5 +94,9 @@ void dijkstraSolve(Graph g,Stack* solution){
 	}
 	push(solution,g->start);
 	freePQueue(q);
+
+}
+void astarSolve(Graph graph, Stack *solution){
+
 
 }

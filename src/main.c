@@ -1,24 +1,31 @@
 #include "Solution.h"
 #include "MazeSolver.h"
 #include "ShowSolution.h"
-#include "MazeReader.h"
+#include "GraphReader.h"
 #include <stdio.h>
+#include <string.h>
 #include<stdlib.h>
 #include <unistd.h>
+#define HELP_PRINT() \
+printf("Rozwiązywanie labiryntu w formacie grafu\n");\
+printf("Opcje:\n");\
+printf("s - plik grafu opisującego labirynt\n");\
+printf("h - pomoc\n");\
+printf("a - algorytm: dijkstra, astar, domyślnie - dfs\n");\
+
+
 int main(int argc,char** argv){
 	int c;
+	void (*solveFunction)(Graph g,Stack* s)=solve;
 	char* graph_file=NULL;
-	while((c=getopt(argc,argv,"hs:"))!=-1)
+	while((c=getopt(argc,argv,"hs:a:"))!=-1)
 	{
 
 		switch(c){
 
 			case 'h':{
-					printf("Rozwiązywanie labiryntu w formacie grafu\n");
-					printf("Opcje:\n");
-					printf("s - plik grafu opisującego labirynt\n");
-					printf("h - pomoc\n");
-					break;
+					HELP_PRINT();
+					 break;
 				 }
 			case 's':
 				 {
@@ -28,7 +35,14 @@ int main(int argc,char** argv){
 					
 
 				 }
-			default: c='h'; break;
+			case 'a':{
+					if(!strcmp(optarg,"dijkstra"))
+						solveFunction=dijkstraSolve;
+					else if(!strcmp(optarg,"astar"))
+						solveFunction=astarSolve;
+					
+				 } 
+			case '?':  HELP_PRINT();break;
 
 			
 		}
@@ -44,18 +58,15 @@ int main(int argc,char** argv){
 			printf("Nie udało wczytać się grafu z pliku\n");
 			return 1;
 		}
-		int *visited = malloc(gr->n*sizeof(int));
 		
 		Stack *stack=NULL;
 		initStack(&stack);
-		solve(gr, gr->start, gr->end, visited, stack);
-		reverse(stack);
+		(*solveFunction)(gr, stack);
 		printStack(stack);
 		wypisz(stack, gr);
 		freeGraph(gr);
 		freeStack(stack);
 		fclose(plik);
-		free(visited);
 	}
 	else
 		printf("Podaj nazwe pliku!\n");

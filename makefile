@@ -23,9 +23,9 @@ FLAGS= -g -Wall
 	$(CC) $(FLAGS) -c ./src/ShowSolution.c -o ./src/ShowSolution.o
 ./src/MazeReader.o: ./src/MazeReader.c ./src/Graph.c
 	$(CC) $(FLAGS) -c ./src/MazeReader.c -o ./src/MazeReader.o
-format: ./src/format.o ./src/GraphWriter.o ./src/Graph.o ./src/List.o
-	$(CC) $(FLAGS) ./src/format.o ./src/GraphWriter.o ./src/Graph.o ./src/List.o -o ./bin/format
-./src/format.o: 
-	$(CC) $(FLAGS) -c ./src/format.c -o ./src/format.o
+preprocessor: ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o
+	$(CC) $(FLAGS) ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o -o ./bin/preprocessor
+./src/preprocessor.o: 
+	$(CC) $(FLAGS) -c ./src/preprocessor.c -o ./src/preprocessor.o
 clean:
 	rm ./src/*.o ./bin/*

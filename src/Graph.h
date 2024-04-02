@@ -13,7 +13,6 @@ int end;
 
 Graph initGraph();
 Graph createGraph(int n);
-int assembleGraph(Graph g,char * filename);
 int initNeighborTable(Graph g,int begin,int end);
 int establishNeighborhood(Graph g,int i,int n);
 int addVert(Graph g,int x,int y);
