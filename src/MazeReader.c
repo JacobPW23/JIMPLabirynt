@@ -1,63 +1,55 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "MazeReader.h"
 #define MAX_LINE_SIZE 2050
-int* readVertFromStream(FILE * stream,int n){
-	
-	if(stream==NULL){
 
-	return NULL;
-	}	
-	char tmp [100];int dummy;
-	for(int i=0;i<=n;i++){
-		fgets(tmp,100,stream);
-	
+int vertNum(FILE *plik)
+{
+	if(plik==NULL)
+	{
+		fprintf(stderr, "Nie udało się wczytać ilości wierzchołków\n");
+		return -1;
 	}
-	rewind(stream);
-	int* vert;
-		if((vert=malloc(5 * sizeof*vert))==NULL){
-			fprintf(stderr,"Zabrakło pamięci na dalsze procedowanie rozwiązania\n");
-			return NULL;
-
-	}
-	memset(vert,-1,4*sizeof*vert);
-	if(sscanf(tmp,"%d %d %d %d %d %d %d",&dummy,&dummy,vert,vert+1,vert+2,vert+3,vert+4)<3){
-		free(vert);
-		fprintf(stderr,"Niepoprawna liczba elementów w linii %d w pliku\n",n);
-		return NULL;
+	rewind(plik);
 	
-	}	
-	return vert;
+	int i=0;
+	char buff[MAX_LINE_SIZE];
+	while(fgets(buff, MAX_LINE_SIZE, plik)!=NULL)
+	{
+		i++;
+	}
+	return i-1;
 }
 
-
-int validFile(FILE * file){
-	char buff [MAX_LINE_SIZE];int x=1;
-	fgets(buff,MAX_LINE_SIZE,file);
-	int l= strlen(buff);
-	do
+int readGraphFromFile(FILE *plik, Graph graph)
+{
+	int s, e;
+	rewind(plik);
+	if(plik==NULL)
 	{
-		if(strlen(buff)!=l){
-			fprintf(stderr,"Błąd 2 Nieprawidłowy format pliku. Liczby znaków w liniach %d i %d nie są równe.\n",x-1,x);	
-			return 1;
-
-		}
-		for(int i=0;i<strlen(buff)-1;i++){
-
-			if(buff[i]!=' ' && buff[i]!='X' && buff[i]!='P' && buff[i]!='K')
-			{
-				fprintf(stderr,"Błąd 0 Nieznany znak \'%c\' w linii %d, kolumna %d.\n",buff[i],x,i);
-				return 2; 
-	
-			}
-
-		}
-		x++;
-		
+		fprintf(stderr, "Strumień to NULL \n");
+		return 1;
 	}
-	while(fgets(buff,MAX_LINE_SIZE,file)!=NULL);
-	rewind(file);
+
+	if(graph==NULL)
+	{
+		fprintf(stderr, "Nie udało się wczytać grafu z pamięci\n");
+		return 2;
+	}
+
+	char buff[MAX_LINE_SIZE];
+	fgets(buff, MAX_LINE_SIZE, plik);
+	sscanf(buff, "%d %d", &s, &e);
+	graph->start=s;
+	graph->end=e;
+	
+	for(int i=0; fgets(buff, 2050, plik)!=NULL; i++)
+	{
+		if(sscanf(buff, "%d %d %d %d %d %d", &graph->cords[2*i], &graph->cords[2*i+1], &graph->neighbours[i][0],&graph->neighbours[i][1], &graph->neighbours[i][2], &graph->neighbours[i][3])!=6)
+		{
+			fprintf(stderr, "Nie udało się wczytać wierzchołków z bufora\n");
+			return 3;
+		}
+
+	}
 	return 0;
 }
-

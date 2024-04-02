@@ -1,26 +1,27 @@
 CC=gcc
-COPT= -ggdb -Wall -ansi -std=c99
+FLAGS= -g -Wall
 
-./bin/maze: ./src/main.o ./src/MazeReader.o ./src/MazeSolver.o ./src/Graph.o ./src/List.o ./src/format.o
-	$(CC) $(COPT) ./src/main.o ./src/MazeReader.o ./src/MazeSolver.o ./src/Graph.o ./src/List.o -o $@
-	$(CC) $(COPT) ./src/format.o ./src/MazeReader.o ./src/MazeSolver.o ./src/Graph.o ./src/List.o -o ./bin/format
-graphtest:
-	$(CC) $(COPT) -c ./src/graphTest.c ./src/Graph.c ./src/List.c
-	$(CC) $(COPT)  graphTest.o ./src/Graph.o ./src/List.o -o $@
-	./$@
-	rm $@ *.o
-list_test:
-	$(CC) $(COPT) -c ./src/list_test.c ./src/List.c
-	$(CC) $(COPT)  list_test.o ./src/List.o -o $@
-	./$@
-	rm $@ *.o
-	
-./src/main.o: ./src/main.c
-./src/main.o: ./src/main.c
+./bin/maze: ./src/main.o ./src/MazeSolver.o ./src/Graph.o ./src/List.o ./src/Solution.o ./src/ShowSolution.o ./src/GraphReader.o
+	$(CC) $(FLAGS) ./src/main.o ./src/MazeSolver.o ./src/Graph.o ./src/List.o ./src/Solution.o ./src/ShowSolution.o ./src/GraphReader.o -o ./bin/maze
+./src/main.o: ./src/main.c ./src/MazeSolver.c ./src/Graph.c ./src/GraphReader.c
+	$(CC) $(FLAGS) -c ./src/main.c -o ./src/main.o
 ./src/Graph.o: ./src/Graph.c
-./src/MazeReader.o: ./src/MazeReader.c
-./src/List.o: ./src/List.c
-./src/MazeSolver.o: ./src/MazeSolver.c
-./src/format.o: ./src/format.c
+	$(CC) $(FLAGS) -c ./src/Graph.c -o ./src/Graph.o
+./src/GraphWriter.o: ./src/GraphWriter.c
+	$(CC) $(FLAGS) -c ./src/GraphWriter.c -o ./src/GraphWriter.o
+./src/List.o: ./src/List.c 
+	$(CC) $(FLAGS) -c ./src/List.c -o ./src/List.o
+./src/MazeSolver.o: ./src/MazeSolver.c ./src/Graph.c ./src/Solution.c
+	$(CC) $(FLAGS) -c ./src/MazeSolver.c -o ./src/MazeSolver.o
+./src/Solution.o: ./src/Solution.c ./src/Graph.c
+	$(CC) $(FLAGS) -c ./src/Solution.c -o ./src/Solution.o
+./src/ShowSolution.o: ./src/ShowSolution.c ./src/Graph.c ./src/Solution.c
+	$(CC) $(FLAGS) -c ./src/ShowSolution.c -o ./src/ShowSolution.o
+./src/MazeReader.o: ./src/MazeReader.c ./src/Graph.c
+	$(CC) $(FLAGS) -c ./src/MazeReader.c -o ./src/MazeReader.o
+format: ./src/format.o ./src/GraphWriter.o ./src/Graph.o ./src/List.o
+	$(CC) $(FLAGS) ./src/format.o ./src/GraphWriter.o ./src/Graph.o ./src/List.o -o ./bin/format
+./src/format.o: 
+	$(CC) $(FLAGS) -c ./src/format.c -o ./src/format.o
 clean:
 	rm ./src/*.o ./bin/*
