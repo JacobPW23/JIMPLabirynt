@@ -61,25 +61,34 @@ Graph createGraph(int n)
 	Graph gr=malloc(sizeof(*gr));
 	if(gr==NULL)
 	{
-		free(gr);
-		fprintf(stderr, "Nie udało się stworzyć grafu\n");
+		fprintf(stderr, "Błąd: Nie udało się stworzyć grafu\n");
 		return NULL;
 	}
 	gr->n=n;
-	gr->coords=malloc(2*n*sizeof(int));
-	gr->neighbors=malloc(n*sizeof(int*));
+	gr->size=n;
+	if((gr->coords=malloc(2*n*sizeof*gr->coords))==NULL){
+		free(gr);
+		fprintf(stderr, "Błąd: Nie udało się zaalokować pamięci na współrzędne\n");
+
+	}
+	gr->neighbors=malloc(n*sizeof*gr->neighbors);
 	if(gr->neighbors==NULL)
 	{
-		free(gr->neighbors);
+		free(gr->coords);
+		free(gr);
 		fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów\n");
 		return NULL;
 	}
 	for(int i=0;i<n;i++)
 	{
-		gr->neighbors[i]=malloc(4*sizeof(int));
+		gr->neighbors[i]=malloc(4*sizeof*gr->neighbors[i]);
 		if(gr->neighbors[i]==NULL)
 		{
-			free(gr->neighbors[i]);
+			for(int j=i-1;j>=0;j--)
+				free(gr->neighbors[j]);
+			free(gr->neighbors);
+			free(gr->coords);
+			free(gr);
 			fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów wierzchołka\n");
 			return NULL;
 		}
