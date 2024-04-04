@@ -16,35 +16,6 @@ void printVertToStream(FILE * stream,Graph g){
         }
 }
 
-int validFile(FILE * file){
-        char buff [MAX_LINE_SIZE];int x=1;
-        fgets(buff,MAX_LINE_SIZE,file);
-        int l= strlen(buff);
-        do
-        {
-                if(strlen(buff)!=l){
-                        fprintf(stderr,"Błąd 2 Nieprawidłowy format pliku. Liczby znaków w liniach %d i %d nie są równe.\n",x-1,x);
-                        return 1;
-
-                }
-                for(int i=0;i<strlen(buff)-1;i++){
-
-                        if(buff[i]!=' ' && buff[i]!='X' && buff[i]!='P' && buff[i]!='K')
-                        {
-                                fprintf(stderr,"Błąd 0 Nieznany znak \'%c\' w linii %d, kolumna %d.\n",buff[i],x,i);
-                                return 2;
-
-                        }
-
-                }
-                x++;
-
-        }
-        while(fgets(buff,MAX_LINE_SIZE,file)!=NULL);
-        rewind(file);
-        return 0;
-}
-
 int startVert(FILE *plik)
 {
         if(plik==NULL)

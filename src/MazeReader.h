@@ -1,8 +1,9 @@
 #ifndef MAZE_READER
-#define MAZE_READER
+#define MAZE_READER 
 #include "Graph.h"
 
-int vertNum(FILE *plik);
-int readGraphFromFile(FILE *plik, Graph graph);
+int validFile(FILE * file);
+int assembleGraph(Graph g,char * filename);
+int readRLE8File(char *nazwa_pliku);
 
 #endif
