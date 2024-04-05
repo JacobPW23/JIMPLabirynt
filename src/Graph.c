@@ -153,7 +153,6 @@ int addVert(Graph g,int x,int y){
 		return 0;
 	}
 	else{
-		//we have to increase structure memory
 		if((g->coords=realloc(g->coords,4*g->size*sizeof (*g->coords)))==NULL){
 			freeGraph(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
@@ -220,8 +219,5 @@ void printGraph(Graph g){
 		printf("\n\n");
 
 	}
-
-
-
 }
 

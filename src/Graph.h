@@ -20,3 +20,6 @@ void freeGraph(Graph g);
 int browseBuforedNumber(List l,Graph g,int x);
 void printGraph(Graph g);
 #endif
+
+
+

@@ -7,7 +7,7 @@ FLAGS= -g -Wall
 	$(CC) $(FLAGS) -c ./src/main.c -o ./src/main.o
 ./src/Graph.o: ./src/Graph.c
 	$(CC) $(FLAGS) -c ./src/Graph.c -o ./src/Graph.o
-./src/GraphWriter.o: ./src/GraphWriter.c
+./src/GraphWriter.o: ./src/GraphWriter.c ./src/Graph.o
 	$(CC) $(FLAGS) -c ./src/GraphWriter.c -o ./src/GraphWriter.o
 ./src/GraphReader.o: ./src/GraphReader.c
 	$(CC) $(FLAGS) -c ./src/GraphReader.c -o ./src/GraphReader.o
@@ -21,7 +21,7 @@ FLAGS= -g -Wall
 	$(CC) $(FLAGS) -c ./src/PriorityQueue.c -o ./src/PriorityQueue
 ./src/ShowSolution.o: ./src/ShowSolution.c ./src/Graph.c ./src/Solution.c
 	$(CC) $(FLAGS) -c ./src/ShowSolution.c -o ./src/ShowSolution.o
-./src/MazeReader.o: ./src/MazeReader.c ./src/Graph.c
+./src/MazeReader.o: ./src/MazeReader.c ./src/Graph.c ./src/List.c
 	$(CC) $(FLAGS) -c ./src/MazeReader.c -o ./src/MazeReader.o
 preprocessor: ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o
 	$(CC) $(FLAGS) ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o -o ./bin/preprocessor

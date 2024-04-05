@@ -1,10 +1,12 @@
-#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "Graph.h"
+#include "GraphWriter.h"
 #include "MazeReader.h"
 #define MAX_LINE_SIZE 2050
 #define CROSSCODE 184
 #define TURNCODE 240
 #define DEADENDCODE 296
-
 
 int validFile(FILE * file){
         char buff [MAX_LINE_SIZE];int x=1;
@@ -36,11 +38,109 @@ int validFile(FILE * file){
 }
 
 
-int assembleGraph(Graph g,char * filename){
+int readRLE8File(char* file_name)
+{
+	char bin[5]=".bin";
+	char txt[5]=".txt";
+	char file_name_bin[50]="";
+	strcat(file_name_bin, file_name);
+	strcat(file_name_bin, bin);
+        FILE *plik = fopen(file_name_bin, "rb");
+        if(plik==NULL)
+        {
+                printf("Nie udało się otworzyć pliku\n");
+                return 1;
+        }
+	
+	int file_id;
+        int esc;
+        int columns;
+        int lines;
+        int entry_x, entry_y;
+        int exit_x, exit_y;
+        int counter;
+        int solution_offset;
+        int separator;
+        int wall, path;
+
+
+        fread(&file_id, 4, 1, plik);
+        fread(&esc, 1, 1, plik);
+        fread(&columns, 2, 1, plik);
+        fread(&lines, 2, 1, plik);
+        fread(&entry_x, 2, 1, plik);
+        fread(&entry_y, 2, 1, plik);
+        fread(&exit_x, 2, 1, plik);
+        fread(&exit_y, 2, 1, plik);
+
+        fseek(plik, 12, SEEK_CUR);
+
+        fread(&counter, 4, 1, plik);
+        fread(&solution_offset, 4, 1, plik);
+        fread(&separator, 1, 1, plik);
+        fread(&wall, 1, 1, plik);
+        fread(&path, 1, 1, plik);
+
+        int value;
+        int count;
+
+        int charInLine=0;
+        int currPos=1;
+        int lineNumber=1;
+
+	char file_name_txt[50]="";
+	strcat(file_name_txt, file_name);
+	strcat(file_name_txt, txt);	
+        FILE *txtplik=fopen(file_name_txt, "w");
+	
+	if(txtplik==NULL)
+	{
+		printf("Nie udało się otworzyć pliku .txt\n");
+		return 3;
+	}
+
+        while(lineNumber <=lines)
+        {
+                while(charInLine < columns)
+                {
+                        fread(&separator, 1, 1, plik);
+                        fread(&value, 1, 1, plik);
+                        fread(&count, 1, 1, plik);
+                        charInLine+=count+1;
+                        while(currPos<=charInLine)
+                        {
+                                if(currPos==entry_x&&lineNumber==entry_y)
+                                {
+                                        putc('P', txtplik);
+                                        currPos++;
+                                }
+                                else if(currPos==exit_x&&lineNumber==exit_y)
+                                {
+                                        putc('K', txtplik);
+                                        currPos++;
+                                }
+                                putc(value, txtplik);
+                                currPos++;
+                        }
+
+                }
+                putc('\n', txtplik);
+                lineNumber++;
+                currPos=1;
+                charInLine=0;
+
+        }
+	printf("Przetworzono format pliku na tekstowy\n");
+	return 0;
+	
+}
+
+int assembleGraph(Graph g,char * filename)
+{
 FILE* file=fopen(filename,"r");
 if(file==NULL){
-        fprintf(stderr,"Błąd 1 Plik \"%s\" nie istnieje lub nie można go otworzyć\n",filename);
-        return 1;
+    	fprintf(stderr,"Błąd 1 Plik \"%s\" nie istnieje lub nie można go otworzyć\n",filename);
+       	return 1;
 }
 int x=1;
 char curr [MAX_LINE_SIZE] ;
@@ -62,10 +162,10 @@ do
                         if(se<=CROSSCODE ){
                                 addVert(g,i,x);
                                 if(curr[i-1]==' ')
-                                        establishNeighborhood(g,g->n-2,g->n-1);
+                                        establishNeighbourhood(g,g->n-2,g->n-1);
                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                        establishNeighborhood(g,g->n-1,tmp);
+                                        establishNeighbourhood(g,g->n-1,tmp);
                                         l=removeFromList(l,tmp);
 
                                 }
@@ -81,7 +181,7 @@ do
                         if(prev[i]==' '){
                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                        establishNeighborhood(g,g->n-1,tmp);
+                                        establishNeighbourhood(g,g->n-1,tmp);
                                         l=removeFromList(l,tmp);
 
                                 }
@@ -89,7 +189,7 @@ do
                         }
                         else if(curr[i-1]==' '){
 
-                                establishNeighborhood(g,g->n-2,g->n-1);
+                                establishNeighbourhood(g,g->n-2,g->n-1);
                         }
                         else if(nxt[i]==' '){
                                 if((l=addToList(l,g->n-1))==NULL){
@@ -112,7 +212,7 @@ do
                                         }
                                         else{
                                                 addVert(g,i,x);
-                                                establishNeighborhood( g,g->n-2,g->n-1);
+                                                establishNeighbourhood( g,g->n-2,g->n-1);
                                                 if((l=addToList(l,g->n-1))==NULL){
                                                         return 1;
                                                 }
@@ -124,12 +224,12 @@ do
                                                 addVert(g,i,x);
                                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                                        establishNeighborhood(g,g->n-1,tmp);
+                                                        establishNeighbourhood(g,g->n-1,tmp);
                                                         l=removeFromList(l,tmp);
 
                                                 }
                                         if(curr[i-1]==' ')
-                                                establishNeighborhood( g,g->n-2,g->n-1);
+                                                establishNeighbourhood( g,g->n-2,g->n-1);
                                         }
                                         }
                         }
@@ -148,13 +248,14 @@ do
                                 else{
                                         addVert(g,i,x);
                                         g->end=g->n-1;
+					printf("%d\n", g->end);
                                         if(curr[i-1]==' '){
-                                                establishNeighborhood( g,g->n-2,g->n-1);
+                                                establishNeighbourhood( g,g->n-2,g->n-1);
                                                 if(prev[i]==' '){
                                                 int tmp;
                                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                                        establishNeighborhood(g,g->n-1,tmp);
+                                                        establishNeighbourhood(g,g->n-1,tmp);
                                                         l=removeFromList(l,tmp);
 
                                                 }
@@ -165,7 +266,7 @@ do
                                                 int tmp;
                                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                                        establishNeighborhood(g,g->n-1,tmp);
+                                                        establishNeighbourhood(g,g->n-1,tmp);
                                                         l=removeFromList(l,tmp);
 
                                                 }
@@ -187,3 +288,4 @@ freeList(l);
 return 0;
 
 }
+
