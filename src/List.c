@@ -1,11 +1,11 @@
 #include "List.h"
 #include <stdlib.h>
 #include <stdio.h>
-List addToList(List l,int i){
+List addToList(List l,unsigned int i){
 	if(l==NULL){
 
 		List new;
-		if((new=malloc(sizeof (*new)))==NULL){
+		if((new=malloc(sizeof(*new)))==NULL){
 			freeList(l);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
@@ -21,7 +21,7 @@ List addToList(List l,int i){
 
 	
 	List new;
-	if((new=malloc(sizeof (*new)))==NULL){
+	if((new=malloc(sizeof(*new)))==NULL){
 		freeList(l);
 		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
@@ -36,7 +36,7 @@ List addToList(List l,int i){
 }
 
 
-List removeFromList(List l,int i){
+List removeFromList(List l,unsigned int i){
 	List e=l;
 	if(l!=NULL && l->i==i){
 		List exterminated=l;
@@ -45,7 +45,7 @@ List removeFromList(List l,int i){
 		return l;
 
 	}
-	while(e!=NULL ){
+	while(e->nxt!=NULL ){
 		if(e->nxt->i==i){
 
 			List exterminated=e->nxt;
@@ -59,7 +59,7 @@ return l;
 }
 
 
-List getListElem(List l,int i){
+List getListElem(List l,unsigned int i){
 
 	List e=l;
 	while(e!=NULL && e->i!=i){

@@ -11,12 +11,12 @@ printf("Rozwiązywanie labiryntu w formacie grafu\n");\
 printf("Opcje:\n");\
 printf("s - plik grafu opisującego labirynt\n");\
 printf("h - pomoc\n");\
-printf("a - algorytm: dijkstra, astar, domyślnie - dfs\n");\
+printf("a - algorytm: dfs, astar, domyślnie - dijkstra\n");\
 
 
 int main(int argc,char** argv){
 	int c;
-	void (*solveFunction)(Graph g,Stack* s)=solve;
+	void (*solveFunction)(Graph g,Stack* s)=dijkstraSolve;
 	char* graph_file=NULL;
 	while((c=getopt(argc,argv,"hs:a:"))!=-1)
 	{
@@ -36,8 +36,8 @@ int main(int argc,char** argv){
 
 				 }
 			case 'a':{
-					if(!strcmp(optarg,"dijkstra"))
-						solveFunction=dijkstraSolve;
+					if(!strcmp(optarg,"dfs"))
+						solveFunction=solve;
 					else if(!strcmp(optarg,"astar"))
 						solveFunction=astarSolve;
 					

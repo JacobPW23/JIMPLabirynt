@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include "PriorityQueue.h"
 
-PQueue promoteElem(PQueue pq,int i,int keyValue){
+PQueue promoteElem(PQueue pq,int i,unsigned int keyValue){
 	PQueue tmp=pq;
 	PQueue tmp2=pq;
+	if(pq==NULL) return pq;
 	if((isGreaterOrEqual(pq->key,keyValue))){
 	while(tmp2->nxt!=NULL && tmp2->nxt->i!=i)
 		tmp2=tmp2->nxt;
@@ -30,7 +31,7 @@ PQueue promoteElem(PQueue pq,int i,int keyValue){
 	elem->key=keyValue;
 	return pq;
 }
-PQueue add(PQueue pq,int i,int keyValue){
+PQueue add(PQueue pq,int i,unsigned int keyValue){
 
 		PQueue new;
 		if((new=malloc(sizeof (*new)))==NULL){
@@ -40,14 +41,21 @@ PQueue add(PQueue pq,int i,int keyValue){
 		}
 		new->i=i;
 		new->key=keyValue;
-	if(pq==NULL){
-		new->nxt=NULL;
-		pq=new;
-		return pq;
+	if(pq==NULL || isGreater(pq->key,keyValue)){
+		new->nxt=pq;
+		
+		return new;
 
 	}
-	new->nxt=pq;
-	return new;
+	PQueue e=pq;
+	while(e->nxt!=NULL && isGreaterOrEqual(keyValue,e->nxt->i)){
+		e=e->nxt;
+
+			}
+	
+	new->nxt=e->nxt;
+	e->nxt=new;
+	return pq;
 
 		
 }
@@ -68,7 +76,7 @@ void freePQueue(PQueue pq){
 	}
 }
 
-int isGreater(int a, int b){
+int isGreater(unsigned int a,unsigned int b){
 	//return 1 when a is greater than b and 0 in another case
 	//Value -1 means infinity
 	
@@ -78,7 +86,7 @@ int isGreater(int a, int b){
 
 
 }
-int isGreaterOrEqual(int a, int b){
+int isGreaterOrEqual(unsigned int a, unsigned int b){
 	//return 1 when a is greater than b and 0 in another case
 	//Value -1 means infinity
 	

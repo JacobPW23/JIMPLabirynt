@@ -3,16 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct elm{
-	int i;
-	int key;
+	unsigned int i;
+	unsigned int key;
 	struct elm* nxt;
 
 }* PQueue;
 
-PQueue promoteElem(PQueue pq,int i,int keyValue);
-PQueue add(PQueue pq,int i,int keyValue);
+PQueue promoteElem(PQueue pq,int i,unsigned int keyValue);
+PQueue add(PQueue pq,int i,unsigned int keyValue);
 PQueue popElem(PQueue pq,PQueue popped);
 void freePQueue(PQueue pq);
-int isGreater(int a, int b);
-int isGreaterOrEqual(int a, int b);
+int isGreater(unsigned int a, unsigned int b);
+int isGreaterOrEqual(unsigned int a, unsigned int b);
 #endif
