@@ -3,10 +3,6 @@
 #include <string.h>
 #include "Graph.h"
 #define MAX_LINE_SIZE 2050
-#define CROSSCODE 184
-#define TURNCODE 240
-#define DEADENDCODE 296
-#define MAX_LINE_SIZE 2050
 
 Graph initGraph(void){
 	Graph g;
@@ -15,15 +11,15 @@ Graph initGraph(void){
 		return NULL;
 
 	}
-	if((g->cords=malloc(20*sizeof (*g->cords)))==NULL){
+	if((g->coords=malloc(20*sizeof (*g->coords)))==NULL){
   		free(g);
 		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
   		return NULL;
 
 	}
 
-	if((g->neighbours=malloc(10*sizeof (*g->neighbours)))==NULL){
-		free(g->cords);
+	if((g->neighbors=malloc(10*sizeof (*g->neighbors)))==NULL){
+		free(g->coords);
 		free(g);
 		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
@@ -31,14 +27,14 @@ Graph initGraph(void){
 	g->n=0;
 
 	for(int i=0;i<10;i++){
-		if((g->neighbours[i]=malloc(4*sizeof(int)))==NULL){
+		if((g->neighbors[i]=malloc(4*sizeof(int)))==NULL){
 
 			for(int j=i-1;j>=0;j--){
 
-				free(g->neighbours[j]);
+				free(g->neighbors[j]);
 			}
-			free(g->neighbours);
-			free(g->cords);
+			free(g->neighbors);
+			free(g->coords);
 			free(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
@@ -47,7 +43,7 @@ Graph initGraph(void){
 
 	}
 	for(int i=0;i<10;i++)
-		memset(g->neighbours[i],-1,4*sizeof(int));
+		memset(g->neighbors[i],-1,4*sizeof(int));
 
 
 	g->size=10;
@@ -61,25 +57,34 @@ Graph createGraph(int n)
 	Graph gr=malloc(sizeof(*gr));
 	if(gr==NULL)
 	{
-		free(gr);
-		fprintf(stderr, "Nie udało się stworzyć grafu\n");
+		fprintf(stderr, "Błąd: Nie udało się stworzyć grafu\n");
 		return NULL;
 	}
 	gr->n=n;
-	gr->cords=malloc(2*n*sizeof(int));
-	gr->neighbours=malloc(n*sizeof(int*));
-	if(gr->neighbours==NULL)
+	gr->size=n;
+	if((gr->coords=malloc(2*n*sizeof*gr->coords))==NULL){
+		free(gr);
+		fprintf(stderr, "Błąd: Nie udało się zaalokować pamięci na współrzędne\n");
+
+	}
+	gr->neighbors=malloc(n*sizeof*gr->neighbors);
+	if(gr->neighbors==NULL)
 	{
-		free(gr->neighbours);
+		free(gr->coords);
+		free(gr);
 		fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów\n");
 		return NULL;
 	}
 	for(int i=0;i<n;i++)
 	{
-		gr->neighbours[i]=malloc(4*sizeof(int));
-		if(gr->neighbours[i]==NULL)
+		gr->neighbors[i]=malloc(4*sizeof*gr->neighbors[i]);
+		if(gr->neighbors[i]==NULL)
 		{
-			free(gr->neighbours[i]);
+			for(int j=i-1;j>=0;j--)
+				free(gr->neighbors[j]);
+			free(gr->neighbors);
+			free(gr->coords);
+			free(gr);
 			fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów wierzchołka\n");
 			return NULL;
 		}
@@ -88,17 +93,17 @@ Graph createGraph(int n)
 	return gr;	
 }
 
-int initNeighbourTable(Graph g,int begin,int end){
+int initNeighborTable(Graph g,int begin,int end){
 
 	for(int i=begin;i<end;i++){
-		if((g->neighbours[i]=realloc(g->neighbours[i],4*sizeof(int)))==NULL){
+		if((g->neighbors[i]=realloc(g->neighbors[i],4*sizeof(int)))==NULL){
 
 			for(int j=i-1;j>=0;j--){
 
-				free(g->neighbours[j]);
+				free(g->neighbors[j]);
 			}
-			free(g->neighbours);
-			free(g->cords);
+			free(g->neighbors);
+			free(g->coords);
 			free(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
@@ -107,32 +112,32 @@ int initNeighbourTable(Graph g,int begin,int end){
 
 	}
 	for(int i=begin;i<end;i++)
-		memset(g->neighbours[i],-1,4*sizeof(int));
+		memset(g->neighbors[i],-1,4*sizeof(int));
 	return 0;
 
 }
 
 
 
-int establishNeighbourhood(Graph g,int i,int n){
+int establishNeighborhood(Graph g,int i,int n){
 	int j=0;
 	if(i>g->n || n>g->n)
 		return 1;
-	for(j;g->neighbours[i][j]!=-1;j++);
-	if(g->neighbours[i][j]!=-1){
+	for(j;g->neighbors[i][j]!=-1;j++);
+	if(g->neighbors[i][j]!=-1){
 		return 1;
 	}
 	else{
 
-		g->neighbours[i][j]=n;
+		g->neighbors[i][j]=n;
 	}
-		for(j=0;g->neighbours[n][j]!=-1;j++);
-	if(g->neighbours[n][j]!=-1){
+		for(j=0;g->neighbors[n][j]!=-1;j++);
+	if(g->neighbors[n][j]!=-1){
 		return 1;
 	}
 	else{
 
-		g->neighbours[n][j]=i;	
+		g->neighbors[n][j]=i;	
 	}	
 return 0;
 
@@ -142,30 +147,30 @@ return 0;
 
 int addVert(Graph g,int x,int y){
 	if(g->n < g->size){
-		g->cords[2*g->n]=x;
-		g->cords[2*g->n+1]=y;
+		g->coords[2*g->n]=x;
+		g->coords[2*g->n+1]=y;
 		g->n++;
 		return 0;
 	}
 	else{
-		if((g->cords=realloc(g->cords,4*g->size*sizeof (*g->cords)))==NULL){
+		if((g->coords=realloc(g->coords,4*g->size*sizeof (*g->coords)))==NULL){
 			freeGraph(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 				}
-		if((g->neighbours=realloc(g->neighbours,2*g->size*sizeof (*g->neighbours)))==NULL){
+		if((g->neighbors=realloc(g->neighbors,2*g->size*sizeof (*g->neighbors)))==NULL){
 			freeGraph(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 				}
-		if(initNeighbourTable(g,g->size,g->size*2)==1){
+		if(initNeighborTable(g,g->size,g->size*2)==1){
 			freeGraph(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 		}
 		g->size*=2;
-		g->cords[2*g->n]=x;
-		g->cords[2*g->n+1]=y;
+		g->coords[2*g->n]=x;
+		g->coords[2*g->n+1]=y;
 		g->n++;
 		return 0;
 	}
@@ -175,11 +180,11 @@ int addVert(Graph g,int x,int y){
 
 
 void freeGraph(Graph g){
-       free(g->cords);
+       free(g->coords);
        for(int i=0;i<g->size;i++){
- 		 free(g->neighbours[i]);
+ 		 free(g->neighbors[i]);
  	}
- 	free(g->neighbours);
+ 	free(g->neighbors);
  	free(g);
 }
 
@@ -188,7 +193,7 @@ void freeGraph(Graph g){
 int browseBuforedNumber(List l,Graph g,int x){
 	List tmp=l;
 	while(tmp!=NULL){
-		if(g->cords[2*tmp->i]==x){
+		if(g->coords[2*tmp->i]==x){
 
 			return tmp->i;
 		}
@@ -205,15 +210,14 @@ void printGraph(Graph g){
 	for(int i=0;i<g->n;i++){
 
 		printf("Vertice nr. %d\n",i);
-		printf("Cords: %d %d \n",g->cords[2*i],g->cords[(2*i)+1]);
-		printf("Neighbours: ");
-		for(int j=0;g->neighbours[i][j]!=-1 && j<4;j++){
-		printf("%d ",g->neighbours[i][j]);
+		printf("Cords: %d %d \n",g->coords[2*i],g->coords[(2*i)+1]);
+		printf("Neighbors: ");
+		for(int j=0;g->neighbors[i][j]!=-1 && j<4;j++){
+		printf("%d ",g->neighbors[i][j]);
 	
 		}
 		printf("\n\n");
 
 	}
 }
-
 

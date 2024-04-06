@@ -6,7 +6,6 @@
 #define CROSSCODE 184
 #define TURNCODE 240
 #define DEADENDCODE 296
-#define MAX_LINE_SIZE 2050
 
 int validFile(FILE * file){
         char buff [MAX_LINE_SIZE];int x=1;
@@ -20,6 +19,7 @@ int validFile(FILE * file){
 
                 }
                 for(int i=0;i<strlen(buff)-1;i++){
+
                         if(buff[i]!=' ' && buff[i]!='X' && buff[i]!='P' && buff[i]!='K')
                         {
                                 fprintf(stderr,"Błąd 0 Nieznany znak \'%c\' w linii %d, kolumna %d.\n",buff[i],x,i);
@@ -35,6 +35,7 @@ int validFile(FILE * file){
         rewind(file);
         return 0;
 }
+
 
 int readRLE8File(char* file_name)
 {

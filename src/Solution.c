@@ -89,5 +89,6 @@ void freeStack(Stack *stack)
                 stack->top=stack->top->next;
                 free(temp);
         }
+	free(stack);
 }
 

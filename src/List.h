@@ -2,12 +2,12 @@
 #define _LIST_H_
 #include <stdio.h>
 typedef struct elem{
-int i;
+unsigned int i;
 struct elem* nxt;
 }*List;
-List addToList(List l,int i);
-List removeFromList(List l,int i);
-List getListElem(List l ,int i);
+List addToList(List l,unsigned int i);
+List removeFromList(List l,unsigned int i);
+List getListElem(List l ,unsigned int i);
 void freeList(List l);
 void printList(List l);
 #endif
