@@ -1,60 +1,46 @@
-#include "Maze.h"
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <unistd.h>
-int main(int argc,char** argv){
-	int c;
-	char* maze_file=NULL;
-	char* format_file=NULL;
-	while((c=getopt(argc,argv,"hm:f:"))!=-1)
-	{
+#include <string.h>
+#include "MazeReader.h"
+#include "GraphWriter.h"
+#include "Graph.h"
+int main(int argc,char** argv)
+{
+	
+	if(argc>2)
+        {
+        	char txt[5]=".txt";
+        	char maze_file_txt[50]="";
+        	char *nazwa=argv[1];
+        	char *format=argv[2];
+        	strcat(maze_file_txt, nazwa);
+        	strcat(maze_file_txt, txt);
+        	readRLE8File(nazwa);
+        	FILE* out=fopen(format,"w");
+        	Graph gr;
+        	if((gr=initGraph())==NULL){
+        	return 1;
+        	}
+        	if(assembleGraph(gr, maze_file_txt)!=0){
+                	fclose(out);
+                	freeGraph(gr);
+	 		return 1;
+        	}
 
-		switch(c){
-
-			case 'h':{
-					printf("Preprocesor formatujący labirynt do postaci grafu\n");
-					printf("Opcje:\n");
-					printf("m - nazwa pliku z labiryntem w formacie pierwotnym\n");
-					printf("f - nazwa pliku zawierającego graf opisujący labirynt\n");
-					printf("h - pomoc\n");
-					break;
-				 }
-			case 'm':
-				 {
-
-					maze_file=optarg;
-					break;
-					
-
-				 }
-			case 'f':{
-
-					format_file=optarg;
-					break;
-				 }
-
-			
-		}
-
-
-	}
-	if(maze_file!=NULL && format_file!=NULL){
-		FILE* out=fopen(format_file,"w");
-		Graph gr;
-		if(( gr=initGraph())==NULL){
-		return 1;	
-		}
-		if(assembleGraph(gr,maze_file)!=0){
-			fclose(out);
-			freeGraph(gr);
-			return 1;
-		}
 		printVertToStream(out,gr);
 
+		if(remove(maze_file_txt)!=0)
+			printf("Nie udało się usunąć pliku txt\n");
 		fclose(out);
 		freeGraph(gr);
 	}
-	
 
-return 0;
+	else
+	{
+		printf("Niepoprawna liczba argumentów\n");
+		return 2;	
+	}
+
+	return 0;
 }

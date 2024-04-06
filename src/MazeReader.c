@@ -3,7 +3,6 @@
 #include "Graph.h"
 #include "GraphWriter.h"
 #include "MazeReader.h"
-#define MAX_LINE_SIZE 2050
 #define CROSSCODE 184
 #define TURNCODE 240
 #define DEADENDCODE 296
@@ -71,7 +70,7 @@ int readRLE8File(char* file_name)
         fread(&entry_y, 2, 1, plik);
         fread(&exit_x, 2, 1, plik);
         fread(&exit_y, 2, 1, plik);
-
+	
         fseek(plik, 12, SEEK_CUR);
 
         fread(&counter, 4, 1, plik);
@@ -79,7 +78,7 @@ int readRLE8File(char* file_name)
         fread(&separator, 1, 1, plik);
         fread(&wall, 1, 1, plik);
         fread(&path, 1, 1, plik);
-
+	
         int value;
         int count;
 
@@ -95,10 +94,10 @@ int readRLE8File(char* file_name)
 	if(txtplik==NULL)
 	{
 		printf("Nie udało się otworzyć pliku .txt\n");
-		return 3;
+		return 2;
 	}
 
-        while(lineNumber <=lines)
+        while(lineNumber<=lines)
         {
                 while(charInLine < columns)
                 {
@@ -118,17 +117,35 @@ int readRLE8File(char* file_name)
                                         putc('K', txtplik);
                                         currPos++;
                                 }
-                                putc(value, txtplik);
-                                currPos++;
+				else
+				{
+					if(value==wall)
+                                		putc(88, txtplik);
+					else if(value==path)
+						putc(32, txtplik);
+					else
+					{
+						printf("Błąd formatu pliku binarnego\n");
+						return 3;
+					}
+					currPos++;
+					
+				}
                         }
 
                 }
-                putc('\n', txtplik);
+		putc('\n', txtplik);
                 lineNumber++;
                 currPos=1;
                 charInLine=0;
 
         }
+	fclose(txtplik);
+	
+	FILE *txtfile=fopen(file_name_txt, "r");
+	if(validFile(txtfile)==1)
+		return 4;
+
 	printf("Przetworzono format pliku na tekstowy\n");
 	return 0;
 	
@@ -247,7 +264,6 @@ do
                                 else{
                                         addVert(g,i,x);
                                         g->end=g->n-1;
-					printf("%d\n", g->end);
                                         if(curr[i-1]==' '){
                                                 establishNeighbourhood( g,g->n-2,g->n-1);
                                                 if(prev[i]==' '){
