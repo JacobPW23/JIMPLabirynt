@@ -28,13 +28,31 @@ int main(int argc,char** argv)
 	 		return 1;
         	}
 
-		printVertToStream(out,gr);
+		printGraphToStream(out,gr);
 
 		if(remove(maze_file_txt)!=0)
 			printf("Nie udało się usunąć pliku txt\n");
 		fclose(out);
 		freeGraph(gr);
 	}
+
+	else if(argc==2)
+	{
+		Graph gr;
+		if((gr=initGraph())==NULL)
+			return 1;
+		FILE *plik=fopen("plik.txt", "r");
+		if(assembleGraph(gr, argv[1])!=0)
+		{
+			fclose(plik);
+			freeGraph(gr);
+			return 1;
+		}
+		printGraphToStream(plik, gr);
+		fclose(plik);
+		freeGraph(gr);
+	}
+	
 
 	else
 	{

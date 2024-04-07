@@ -111,7 +111,7 @@ int initNeighborTable(Graph g,int begin,int end){
 
 
 	}
-	for(int i=begin;i<end;i++)
+for(int i=begin;i<end;i++)
 		memset(g->neighbors[i],-1,4*sizeof(int));
 	return 0;
 
@@ -119,7 +119,7 @@ int initNeighborTable(Graph g,int begin,int end){
 
 
 
-int establishNeighborhood(Graph g,int i,int n){
+int establishNeighbourhood(Graph g,int i,int n){
 	int j=0;
 	if(i>g->n || n>g->n)
 		return 1;
