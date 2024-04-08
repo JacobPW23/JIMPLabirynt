@@ -66,10 +66,7 @@ int main(int argc,char** argv){
 			fprintf(stderr,"Błąd: Nie udało się zdekompresować pliku\n");
 		}
 		}
-		if(validFile){
 
-			return 1;
-		}
 		if(assembleGraph(gr,txtfile)!=0){
 			fclose(out);
 			freeGraph(gr);

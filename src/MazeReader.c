@@ -160,6 +160,10 @@ if(file==NULL){
     	fprintf(stderr,"Błąd 1 Plik \"%s\" nie istnieje lub nie można go otworzyć\n",filename);
        	return 1;
 }
+if(validFile(file)){
+	return 1;
+
+}
 int x=1;
 char curr [MAX_LINE_SIZE] ;
 char prev [MAX_LINE_SIZE];
