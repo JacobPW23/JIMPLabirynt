@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include "Graph.h"
@@ -119,7 +120,7 @@ for(int i=begin;i<end;i++)
 
 
 
-int establishNeighbourhood(Graph g,int i,int n){
+int establishNeighborhood(Graph g,int i,int n){
 	int j=0;
 	if(i>g->n || n>g->n)
 		return 1;
@@ -219,5 +220,9 @@ void printGraph(Graph g){
 		printf("\n\n");
 
 	}
+}
+unsigned int getEdge(Graph g, int n,int m){
+	return sqrt((g->coords[2*n]-g->coords[2*m])*(g->coords[2*n]-g->coords[2*m])+(g->coords[2*n+1]-g->coords[2*m+1])*(g->coords[2*n+1]-g->coords[2*m+1]));
+
 }
 

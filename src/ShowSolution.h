@@ -4,6 +4,6 @@
 #include "Graph.h"
 
 
-void wypisz(Stack *stack, Graph graph);
+void printSolution(Path *stack, Graph graph);
 
 #endif

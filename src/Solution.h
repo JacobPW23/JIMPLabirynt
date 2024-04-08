@@ -1,25 +1,25 @@
 #ifndef MAZE_SOLUTION
 #define MAZE_SOLUTION
 
-typedef struct Node
+typedef struct PathNode
 {
     int node;
-    struct Node *next;
-}Node;
+    struct PathNode *next;
+}PathNode;
 
-typedef struct Stack
+typedef struct Path
 {
-        Node* top;
-}Stack;
+        PathNode* top;
+}Path;
 
-Node *createNode(int node);
-int initStack(Stack **stack);
-int isEmpty(Stack *stack);
-int push(Stack *stack, int node);
-int pop(Stack *stack);
-void reverse(Stack *stack);
-void insertAtBottom(Stack *stack, int node);
-void printStack(Stack *stack);
-void freeStack(Stack *stack);
+PathNode *createPathNode(int node);
+int initPath(Path **stack);
+int isEmpty(Path *stack);
+int push(Path *stack, int node);
+int pop(Path *stack);
+void reverse(Path *stack);
+void insertAtBottom(Path *stack, int node);
+void printPath(Path *stack);
+void freePath(Path *stack);
 
 #endif

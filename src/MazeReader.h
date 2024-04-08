@@ -4,6 +4,6 @@
 
 int validFile(FILE * file);
 int assembleGraph(Graph g,char * filename);
-int readRLE8File(char *nazwa_pliku);
+int readRLE8File(char* file_name);
 
 #endif

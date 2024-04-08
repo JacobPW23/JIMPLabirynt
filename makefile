@@ -6,7 +6,7 @@ FLAGS= -g -Wall
 ./src/main.o: ./src/main.c ./src/MazeSolver.c ./src/Graph.c ./src/GraphReader.c
 	$(CC) $(FLAGS) -c ./src/main.c -o ./src/main.o
 ./src/Graph.o: ./src/Graph.c
-	$(CC) $(FLAGS) -c ./src/Graph.c -o ./src/Graph.o
+	$(CC) $(FLAGS) -c ./src/Graph.c -o ./src/Graph.o -lm
 ./src/GraphWriter.o: ./src/GraphWriter.c ./src/Graph.o
 	$(CC) $(FLAGS) -c ./src/GraphWriter.c -o ./src/GraphWriter.o
 ./src/GraphReader.o: ./src/GraphReader.c

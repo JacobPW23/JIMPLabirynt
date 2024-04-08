@@ -2,9 +2,9 @@
 #include "Solution.h"
 #include "ShowSolution.h"
 
-void wypisz(Stack *stack, Graph graph)
+void printSolution(Path *stack, Graph graph)
 {
-    Node *temp=stack->top;
+    PathNode *temp=stack->top;
     while(temp!=NULL && temp->next!=NULL)
     {
         if(graph->coords[2*(temp->node)] == graph->coords[2*(temp->next->node)])

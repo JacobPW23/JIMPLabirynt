@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include "Solution.h"
 
-int initStack(Stack **stack)
+int initPath(Path **stack)
 {
-        *stack=malloc(sizeof(Stack));
+        *stack=malloc(sizeof(Path));
         if(*stack==NULL)
         {
                 printf("Nie udalo sie zainicjowac stosu\n");
@@ -14,22 +14,22 @@ int initStack(Stack **stack)
         return 0;
 }
 
-int push(Stack *stack, int node)
+int push(Path *stack, int node)
 {
-    Node *newNode=malloc(sizeof(Node));
-    if(newNode==NULL)
+    PathNode *newPathNode=malloc(sizeof(PathNode));
+    if(newPathNode==NULL)
     {
         printf("Nie udalo sie zaalokowac pamieci na wezel\n");
         return 1;
     }
-    newNode->node=node;
-    newNode->next=stack->top;
-    stack->top=newNode;
+    newPathNode->node=node;
+    newPathNode->next=stack->top;
+    stack->top=newPathNode;
 
     return 0;
 }
 
-int pop(Stack *stack)
+int pop(Path *stack)
 {
     if(stack==NULL || stack->top==NULL)
     {
@@ -37,14 +37,14 @@ int pop(Stack *stack)
         return 1;
     }
 
-    Node *temp=stack->top;
+    PathNode *temp=stack->top;
     stack->top=temp->next;
 
     free(temp);
     return 0;
 }
 
-void reverse(Stack *stack)
+void reverse(Path *stack)
 {
         if(stack->top!=NULL)
         {
@@ -56,7 +56,7 @@ void reverse(Stack *stack)
         }
 }
 
-void insertAtBottom(Stack *stack, int node)
+void insertAtBottom(Path *stack, int node)
 {
         if(stack->top==NULL)
                 push(stack, node);
@@ -71,9 +71,9 @@ void insertAtBottom(Stack *stack, int node)
         }
 }
 
-void printStack(Stack *stack)
+void printPath(Path *stack)
 {
-        Node *temp=stack->top;
+        PathNode *temp=stack->top;
         while(temp!=NULL)
         {
                 printf("%d\n", temp->node);
@@ -81,11 +81,11 @@ void printStack(Stack *stack)
         }
 }
 
-void freeStack(Stack *stack)
+void freePath(Path *stack)
 {
         while(stack->top!=NULL)
         {
-                Node *temp=stack->top;
+                PathNode *temp=stack->top;
                 stack->top=stack->top->next;
                 free(temp);
         }

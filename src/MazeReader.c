@@ -180,10 +180,10 @@ do
                         if(se<=CROSSCODE ){
                                 addVert(g,i,x);
                                 if(curr[i-1]==' ')
-                                        establishNeighbourhood(g,g->n-2,g->n-1);
+                                        establishNeighborhood(g,g->n-2,g->n-1);
                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                        establishNeighbourhood(g,g->n-1,tmp);
+                                        establishNeighborhood(g,g->n-1,tmp);
                                         l=removeFromList(l,tmp);
 
                                 }
@@ -199,7 +199,7 @@ do
                         if(prev[i]==' '){
                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                        establishNeighbourhood(g,g->n-1,tmp);
+                                        establishNeighborhood(g,g->n-1,tmp);
                                         l=removeFromList(l,tmp);
 
                                 }
@@ -207,7 +207,7 @@ do
                         }
                         else if(curr[i-1]==' '){
 
-                                establishNeighbourhood(g,g->n-2,g->n-1);
+                                establishNeighborhood(g,g->n-2,g->n-1);
                         }
                         else if(nxt[i]==' '){
                                 if((l=addToList(l,g->n-1))==NULL){
@@ -230,7 +230,7 @@ do
                                         }
                                         else{
                                                 addVert(g,i,x);
-                                                establishNeighbourhood( g,g->n-2,g->n-1);
+                                                establishNeighborhood( g,g->n-2,g->n-1);
                                                 if((l=addToList(l,g->n-1))==NULL){
                                                         return 1;
                                                 }
@@ -242,12 +242,12 @@ do
                                                 addVert(g,i,x);
                                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                                        establishNeighbourhood(g,g->n-1,tmp);
+                                                        establishNeighborhood(g,g->n-1,tmp);
                                                         l=removeFromList(l,tmp);
 
                                                 }
                                         if(curr[i-1]==' ')
-                                                establishNeighbourhood( g,g->n-2,g->n-1);
+                                                establishNeighborhood( g,g->n-2,g->n-1);
                                         }
                                         }
                         }
@@ -267,12 +267,12 @@ do
                                         addVert(g,i,x);
                                         g->end=g->n-1;
                                         if(curr[i-1]==' '){
-                                                establishNeighbourhood( g,g->n-2,g->n-1);
+                                                establishNeighborhood( g,g->n-2,g->n-1);
                                                 if(prev[i]==' '){
                                                 int tmp;
                                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                                        establishNeighbourhood(g,g->n-1,tmp);
+                                                        establishNeighborhood(g,g->n-1,tmp);
                                                         l=removeFromList(l,tmp);
 
                                                 }
@@ -283,7 +283,7 @@ do
                                                 int tmp;
                                                 if((tmp=browseBuforedNumber(l,g,i))!=-1){
 
-                                                        establishNeighbourhood(g,g->n-1,tmp);
+                                                        establishNeighborhood(g,g->n-1,tmp);
                                                         l=removeFromList(l,tmp);
 
                                                 }

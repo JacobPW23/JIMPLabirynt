@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include "MazeSolver.h"
@@ -7,7 +6,7 @@
 #include "Solution.h"
 #include "PriorityQueue.h"
 
-int visitNode(Graph graph, int node, int end, int *visited, Stack *stack)
+int visitNode(Graph graph, int node, int end, int *visited, Path *stack)
 {
     visited[node]=1;
     push(stack, node);
@@ -31,7 +30,7 @@ int visitNode(Graph graph, int node, int end, int *visited, Stack *stack)
     return 0;
 }
 
-void solve(Graph graph, Stack *stack)
+void solve(Graph graph, Path *stack)
 {
 	int* visited=malloc(graph->n*sizeof*visited);
 	int start=graph->start;
@@ -46,11 +45,7 @@ void solve(Graph graph, Stack *stack)
     reverse(stack);
 }
 
-int getEdge(Graph g, int n,int m){
-	return sqrt((g->coords[2*n]*g->coords[2*n])+(g->coords[2*m]*g->coords[2*m]));
-
-}
-void dijkstraSolve(Graph g,Stack* solution){
+void dijkstraSolve(Graph g,Path* solution){
 	int distance [g->n];
 	PQueue u;
 	if((u=malloc(sizeof*u))==NULL){
@@ -73,6 +68,8 @@ void dijkstraSolve(Graph g,Stack* solution){
 	q=add(q,g->start,0);
 	while(q!=NULL){
 		q=popElem(q,u);
+		if(u->i==g->end)
+			printf("Znaleziono ścieżkę\n");
 		for(int j=0;g->neighbors[u->i][j]!=-1 && j<4;j++)
 		{	int v=g->neighbors[u->i][j];
 			if(isGreater(distance[v],distance[u->i]+getEdge(g,u->i,v))){
@@ -101,27 +98,27 @@ int heuristic(Graph g, int vertex){
 
 
 }
-void astarSolve(Graph g, Stack *solution){
+void astarSolve(Graph g, Path *solution){
 	unsigned int score [g->n];
 	unsigned int test_score;
 	PQueue u;
-	List closed=NULL;
+	short close[g->n];
 	if((u=malloc(sizeof*u))==NULL){
 		fprintf(stderr, "Błąd 1 Zabrakło pamięci na rozwiązanie labirnytu");
 		return;
 
 	}
-	List tmp;
 	u->nxt=NULL;
 	int previous[g->n];
 	memset(&score,-1,g->n*sizeof(int));
 	memset(&previous,-1,g->n*sizeof(int));
+	memset(&close,0,g->n*sizeof(short));
 	score[g->start]=0;
 	PQueue opened=NULL;
 	opened=add(opened,g->start,0);
 	while(opened!=NULL){
 		opened=popElem(opened,u);
-		closed=addToList(closed,u->i);
+		close[u->i]=1;
 		if(u->i==g->end){
 			printf("Znaleziono Ścieżkę:\n");	
 			break;
@@ -132,13 +129,12 @@ void astarSolve(Graph g, Stack *solution){
 		{	int v=g->neighbors[u->i][j];
 
 			test_score=u->key+getEdge(g,u->i,v);
-			if((tmp=getListElem(closed,v))!=NULL){
-
+			if(close[v]){
 			
 			if(test_score+heuristic(g,v)<score[v]+heuristic(g,v)){
 					
 				score[v]=test_score;
-				closed=removeFromList(closed,v);
+				close[v]=0;
 				opened=add(opened,v,score[v]+heuristic(g,v));
 				previous[v]=u->i;
 			}
@@ -153,7 +149,6 @@ void astarSolve(Graph g, Stack *solution){
 		
 	}
 	free(u);
-	freeList(closed);
 	freePQueue(opened);
 	push(solution,g->end);
 	for(int k=g->end;k>g->start;){
