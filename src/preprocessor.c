@@ -1,64 +1,87 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include "MazeReader.h"
 #include "GraphWriter.h"
-#include "Graph.h"
-int main(int argc,char** argv)
-{
-	
-	if(argc>2)
-        {
-        	char txt[5]=".txt";
-        	char maze_file_txt[50]="";
-        	char *nazwa=argv[1];
-        	char *format=argv[2];
-        	strcat(maze_file_txt, nazwa);
-        	strcat(maze_file_txt, txt);
-        	readRLE8File(nazwa);
-        	FILE* out=fopen(format,"w");
-        	Graph gr;
-        	if((gr=initGraph())==NULL){
-        	return 1;
-        	}
-        	if(assembleGraph(gr, maze_file_txt)!=0){
-                	fclose(out);
-                	freeGraph(gr);
-	 		return 1;
-        	}
+#include <stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include <unistd.h>
+#define HELP_PRINT() \
+printf("Preprocesor formatujący labirynt do postaci grafu\n");\
+printf("Opcje:\n");\
+printf("-m - nazwa pliku z labiryntem w formacie pierwotnym (bez rozszerzenia)\n");\
+printf("-f - nazwa pliku zawierającego graf opisujący labirynt\n");\
+printf("-c - wskazuje,że plik podany w parametrze m jest skompresowny do RLE8\n");\
+printf("-h - pomoc\n");
 
-		printGraphToStream(out,gr);
-
-		if(remove(maze_file_txt)!=0)
-			printf("Nie udało się usunąć pliku txt\n");
-		fclose(out);
-		freeGraph(gr);
+int main(int argc,char** argv){
+	int c;
+	char* maze_file=NULL;
+	char* format_file=NULL;
+	int decompress=0;
+	if(argc==1){
+		HELP_PRINT();
 	}
-
-	else if(argc==2)
+	while((c=getopt(argc,argv,"chm:f:"))!=-1)
 	{
+
+		switch(c){
+
+			case 'h':{
+									break;
+				 }
+			case 'm':
+				 {
+
+					maze_file=optarg;
+					break;
+					
+
+				 }
+			case 'f':{
+
+					format_file=optarg;
+					break;
+				 }
+			case 'c':{
+					decompress=1;
+					break;
+				 }
+
+			
+		}
+
+
+	}
+	if(maze_file!=NULL && format_file!=NULL){
+		FILE* out=fopen(format_file,"w");
 		Graph gr;
-		if((gr=initGraph())==NULL)
+		if(( gr=initGraph())==NULL){
+		return 1;	
+		}
+		char* binfile=malloc(strlen(maze_file)+5);
+		strcpy(binfile,maze_file);
+		char* txtfile=strcat(maze_file,".txt");
+		if(decompress){
+		if(readRLE8File(binfile)){
+
+			fprintf(stderr,"Błąd: Nie udało się zdekompresować pliku\n");
+		}
+		}
+		if(validFile){
+
 			return 1;
-		FILE *plik=fopen("plik.txt", "r");
-		if(assembleGraph(gr, argv[1])!=0)
-		{
-			fclose(plik);
+		}
+		if(assembleGraph(gr,txtfile)!=0){
+			fclose(out);
 			freeGraph(gr);
 			return 1;
 		}
-		printGraphToStream(plik, gr);
-		fclose(plik);
+		printGraphToStream(out,gr);
+
+		fclose(out);
 		freeGraph(gr);
+		free(binfile);
 	}
 	
 
-	else
-	{
-		printf("Niepoprawna liczba argumentów\n");
-		return 2;	
-	}
-
-	return 0;
+return 0;
 }

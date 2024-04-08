@@ -24,8 +24,8 @@ FLAGS= -g -Wall
 ./src/MazeReader.o: ./src/MazeReader.c ./src/Graph.c ./src/List.c
 	$(CC) $(FLAGS) -c ./src/MazeReader.c -o ./src/MazeReader.o
 preprocessor: ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o
-	$(CC) $(FLAGS) ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o -o ./bin/preprocessor
-./src/preprocessor.o: ./src/preprocessor.c ./src/Graph.c ./src/MazeReader.c ./src/GraphWriter.c
-	$(CC) $(FLAGS) -c ./src/preprocessor.c -o ./src/preprocessor.o
+	$(CC) $(FLAGS) ./src/preprocessor.o ./src/GraphWriter.o ./src/MazeReader.o ./src/List.o ./src/Graph.o -o ./bin/preprocessor -lm
+./src/preprocessor.o: ./src/preprocessor.c ./src/Graph.c ./src/MazeReader.c ./src/GraphWriter.c 
+	$(CC) $(FLAGS) -c ./src/preprocessor.c -o ./src/preprocessor.o -lm
 clean:
 	rm ./src/*.o ./bin/preprocessor ./bin/maze
