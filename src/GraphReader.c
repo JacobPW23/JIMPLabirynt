@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "GraphReader.h"
-#define MAX_LINE_SIZE 2050
+#define MAX_LINE_SIZE 2054
 
 int vertNum(FILE *plik)
 {

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "GraphWriter.h"
-#define MAX_LINE_SIZE 2050
 
 void printGraphToStream(FILE * stream,Graph g){
         fprintf(stream, " %d %d\n", g->start, g->end);
