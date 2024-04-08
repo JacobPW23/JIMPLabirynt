@@ -1,170 +1,9 @@
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include "Graph.h"
-
 #define MAX_LINE_SIZE 2050
-#define CROSSCODE 184
-#define TURNCODE 240
-#define DEADENDCODE 296
-
-int assembleGraph(Graph g,char * filename){
-FILE* file=fopen(filename,"r");
-if(file==NULL){
-	fprintf(stderr,"Błąd 1 Plik \"%s\" nie istnieje lub nie można go otworzyć\n",filename);
-	return 1;
-}
-int x=1;
-char curr [MAX_LINE_SIZE] ;
-char prev [MAX_LINE_SIZE];
-char nxt [MAX_LINE_SIZE];
-List l=NULL;
-int tmp=-1;
-
-fgets(prev,MAX_LINE_SIZE,file);
-fgets(curr,MAX_LINE_SIZE,file);
-fgets(nxt,MAX_LINE_SIZE,file);
-do
-{
-	
-	for(int i=1;i<strlen(curr)-1;i++){
-		if(curr[i]==' '){
-
-		 	int se=(int)(curr[i-1]+curr[i+1]+prev[i]+nxt[i]);
-			if(se<=CROSSCODE ){
-				//we've got a pleasure with crossroads
-				addVert(g,i,x);
-				if(curr[i-1]==' ')
-					establishNeighborhood(g,g->n-2,g->n-1);
-				if((tmp=browseBuforedNumber(l,g,i))!=-1){
-
-					establishNeighborhood(g,g->n-1,tmp);
-					l=removeFromList(l,tmp);
-
-				}	
-				if(nxt[i]==' '){
-					if((l=addToList(l,g->n-1))==NULL){
-
-						return 1;
-					}	
-				}
-			}
-			else if(se==DEADENDCODE){
-			//we've got a pleasure with a "dead end"
-			addVert(g,i,x);
-			if(prev[i]==' '){
-				if((tmp=browseBuforedNumber(l,g,i))!=-1){
-
-					establishNeighborhood(g,g->n-1,tmp);
-					l=removeFromList(l,tmp);
-
-				}	
-				
-			}
-			else if(curr[i-1]==' '){
-
-				establishNeighborhood(g,g->n-2,g->n-1);
-			}
-			else if(nxt[i]==' '){
-				if((l=addToList(l,g->n-1))==NULL){
-					return 1;
-				}
-
-			}
-			}
-			else if(prev[i]!=nxt[i]&&curr[i-1]!=curr[i+1]&& se==TURNCODE)
-			{
-				//we've got a pleasure with 90 degree turn
-				if(nxt[i]==' '){
-
-					if(curr[i+1]==' '){
-
-						addVert(g,i,x);
-						if((l=addToList(l,g->n-1))==NULL){
-							return 1;
-						}
-						
-					}
-					else{
-						addVert(g,i,x);
-						establishNeighborhood( g,g->n-2,g->n-1);
-						if((l=addToList(l,g->n-1))==NULL){
-							return 1;
-						}
-					}
-				}
-				else{
-
-					if(prev[i]==' '){
-						addVert(g,i,x);
-						if((tmp=browseBuforedNumber(l,g,i))!=-1){
-
-							establishNeighborhood(g,g->n-1,tmp);
-							l=removeFromList(l,tmp);
-
-						}	
-					if(curr[i-1]==' ')		
-						establishNeighborhood( g,g->n-2,g->n-1);
-					}
-					}
-			}
-			else if((curr[i-1]=='P' || curr[i+1]=='K')){
-
-				//we've got a pleasure with start/end vertice in default maze configuration location
-				//other locations will be served in previous code cases
-				if(curr[i-1]=='P'){
-					
-					addVert(g,i,x);
-					g->start=g->n-1;
-					if(nxt[i]==' '){
-						if((l=addToList(l,g->n-1))==NULL)
-							return 1;
-						
-					}
-				}
-				else{
-					addVert(g,i,x);
-					g->end=g->n-1;
-					if(curr[i-1]==' '){
-						establishNeighborhood( g,g->n-2,g->n-1);
-						if(prev[i]==' '){
-						int tmp;
-						if((tmp=browseBuforedNumber(l,g,i))!=-1){
-
-							establishNeighborhood(g,g->n-1,tmp);
-							l=removeFromList(l,tmp);
-
-						}	
-
-						}	
-					}
-					else{
-						int tmp;
-						if((tmp=browseBuforedNumber(l,g,i))!=-1){
-
-							establishNeighborhood(g,g->n-1,tmp);
-							l=removeFromList(l,tmp);
-
-						}	
-					}
-
-
-				}
-			}
-
-		}
-	}	
-
-	strcpy(prev,curr);
-	strcpy(curr,nxt);x++;
-}
-while(fgets(nxt,MAX_LINE_SIZE,file)!=NULL);
-fclose(file);
-freeList(l);
-return 0;
-
-}
-
 
 Graph initGraph(void){
 	Graph g;
@@ -173,7 +12,7 @@ Graph initGraph(void){
 		return NULL;
 
 	}
-	if((g->cords=malloc(20*sizeof (*g->cords)))==NULL){
+	if((g->coords=malloc(20*sizeof (*g->coords)))==NULL){
   		free(g);
 		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
   		return NULL;
@@ -181,7 +20,7 @@ Graph initGraph(void){
 	}
 
 	if((g->neighbors=malloc(10*sizeof (*g->neighbors)))==NULL){
-		free(g->cords);
+		free(g->coords);
 		free(g);
 		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
@@ -196,7 +35,7 @@ Graph initGraph(void){
 				free(g->neighbors[j]);
 			}
 			free(g->neighbors);
-			free(g->cords);
+			free(g->coords);
 			free(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
@@ -214,6 +53,46 @@ Graph initGraph(void){
 	return g;
 }
 
+Graph createGraph(int n)
+{
+	Graph gr=malloc(sizeof(*gr));
+	if(gr==NULL)
+	{
+		fprintf(stderr, "Błąd: Nie udało się stworzyć grafu\n");
+		return NULL;
+	}
+	gr->n=n;
+	gr->size=n;
+	if((gr->coords=malloc(2*n*sizeof*gr->coords))==NULL){
+		free(gr);
+		fprintf(stderr, "Błąd: Nie udało się zaalokować pamięci na współrzędne\n");
+
+	}
+	gr->neighbors=malloc(n*sizeof*gr->neighbors);
+	if(gr->neighbors==NULL)
+	{
+		free(gr->coords);
+		free(gr);
+		fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów\n");
+		return NULL;
+	}
+	for(int i=0;i<n;i++)
+	{
+		gr->neighbors[i]=malloc(4*sizeof*gr->neighbors[i]);
+		if(gr->neighbors[i]==NULL)
+		{
+			for(int j=i-1;j>=0;j--)
+				free(gr->neighbors[j]);
+			free(gr->neighbors);
+			free(gr->coords);
+			free(gr);
+			fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów wierzchołka\n");
+			return NULL;
+		}
+	}
+	
+	return gr;	
+}
 
 int initNeighborTable(Graph g,int begin,int end){
 
@@ -225,7 +104,7 @@ int initNeighborTable(Graph g,int begin,int end){
 				free(g->neighbors[j]);
 			}
 			free(g->neighbors);
-			free(g->cords);
+			free(g->coords);
 			free(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
@@ -233,28 +112,10 @@ int initNeighborTable(Graph g,int begin,int end){
 
 
 	}
-	for(int i=begin;i<end;i++)
+for(int i=begin;i<end;i++)
 		memset(g->neighbors[i],-1,4*sizeof(int));
 	return 0;
 
-}
-
-void printVertToStream(FILE * stream,Graph g){
-	for(int i=0;i<g->n;i++){
-		fprintf(stream,"%d %d",g->cords[2*i],g->cords[2*i+1]);
-		for(int j=0;j<4;j++){
-			fprintf(stream," %d", g->neighbors[i][j]);
-
-		}
-		if(i==g->start){
-			fprintf(stream," %d",1);
-		}
-		else if(i==g->end)
-			fprintf(stream," %d",2);
-		else
-			fprintf(stream," %d",0);
-		fprintf(stream,"\n");
-	}
 }
 
 
@@ -287,14 +148,13 @@ return 0;
 
 int addVert(Graph g,int x,int y){
 	if(g->n < g->size){
-		g->cords[2*g->n]=x;
-		g->cords[2*g->n+1]=y;
+		g->coords[2*g->n]=x;
+		g->coords[2*g->n+1]=y;
 		g->n++;
 		return 0;
 	}
 	else{
-		//we have to increase structure memory
-		if((g->cords=realloc(g->cords,4*g->size*sizeof (*g->cords)))==NULL){
+		if((g->coords=realloc(g->coords,4*g->size*sizeof (*g->coords)))==NULL){
 			freeGraph(g);
 			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
@@ -310,8 +170,8 @@ int addVert(Graph g,int x,int y){
 			return 1;
 		}
 		g->size*=2;
-		g->cords[2*g->n]=x;
-		g->cords[2*g->n+1]=y;
+		g->coords[2*g->n]=x;
+		g->coords[2*g->n+1]=y;
 		g->n++;
 		return 0;
 	}
@@ -321,14 +181,12 @@ int addVert(Graph g,int x,int y){
 
 
 void freeGraph(Graph g){
-       free(g->cords);
+       free(g->coords);
        for(int i=0;i<g->size;i++){
  		 free(g->neighbors[i]);
  	}
  	free(g->neighbors);
  	free(g);
-
-
 }
 
 
@@ -336,7 +194,7 @@ void freeGraph(Graph g){
 int browseBuforedNumber(List l,Graph g,int x){
 	List tmp=l;
 	while(tmp!=NULL){
-		if(g->cords[2*tmp->i]==x){
+		if(g->coords[2*tmp->i]==x){
 
 			return tmp->i;
 		}
@@ -353,7 +211,7 @@ void printGraph(Graph g){
 	for(int i=0;i<g->n;i++){
 
 		printf("Vertice nr. %d\n",i);
-		printf("Cords: %d %d \n",g->cords[2*i],g->cords[(2*i)+1]);
+		printf("Cords: %d %d \n",g->coords[2*i],g->coords[(2*i)+1]);
 		printf("Neighbors: ");
 		for(int j=0;g->neighbors[i][j]!=-1 && j<4;j++){
 		printf("%d ",g->neighbors[i][j]);
@@ -362,7 +220,9 @@ void printGraph(Graph g){
 		printf("\n\n");
 
 	}
-
-
+}
+unsigned int getEdge(Graph g, int n,int m){
+	return sqrt((g->coords[2*n]-g->coords[2*m])*(g->coords[2*n]-g->coords[2*m])+(g->coords[2*n+1]-g->coords[2*m+1])*(g->coords[2*n+1]-g->coords[2*m+1]));
 
 }
+

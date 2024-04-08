@@ -1,8 +1,9 @@
-#ifndef _MAZE_H
-#define _MAZE_H
-#include<stdio.h>
-#include <stdlib.h>
-#include "MazeSolver.h"
-int* readVertFromStream(FILE* file,int n);
+#ifndef MAZE_READER
+#define MAZE_READER 
+#include "Graph.h"
+
 int validFile(FILE * file);
+int assembleGraph(Graph g,char * filename);
+int readRLE8File(char* file_name);
+
 #endif
