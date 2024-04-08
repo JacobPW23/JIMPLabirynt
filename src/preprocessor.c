@@ -9,7 +9,7 @@ printf("Preprocesor formatujący labirynt do postaci grafu\n");\
 printf("Opcje:\n");\
 printf("-m - nazwa pliku z labiryntem w formacie pierwotnym (bez rozszerzenia)\n");\
 printf("-f - nazwa pliku zawierającego graf opisujący labirynt\n");\
-printf("-c - wskazuje,że plik podany w parametrze m jest skompresowny do RLE8\n");\
+printf("-c - wskazuje,że plik podany w parametrze m jest skompresowany do RLE8\n");\
 printf("-h - pomoc\n");
 
 int main(int argc,char** argv){
@@ -26,7 +26,7 @@ int main(int argc,char** argv){
 		switch(c){
 
 			case 'h':{
-									break;
+					HELP_PRINT(); break;
 				 }
 			case 'm':
 				 {
