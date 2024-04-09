@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Graph.h"
-#define MAX_LINE_SIZE 2050
 
 Graph initGraph(void){
 	Graph g;
