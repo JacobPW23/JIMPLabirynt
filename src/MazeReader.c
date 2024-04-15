@@ -6,7 +6,7 @@
 #define CROSSCODE 184
 #define TURNCODE 240
 #define DEADENDCODE 296
-#define MAX_LINE_SIZE 2054
+#define MAX_LINE_SIZE 2050
 
 int validFile(FILE * file){
         char buff [MAX_LINE_SIZE];int x=1;
@@ -36,7 +36,6 @@ int validFile(FILE * file){
         rewind(file);
         return 0;
 }
-
 
 int readRLE8File(char* file_name)
 {
@@ -80,7 +79,8 @@ int readRLE8File(char* file_name)
         fread(&separator, 1, 1, plik);
         fread(&wall, 1, 1, plik);
         fread(&path, 1, 1, plik);
-	
+
+		
         int value;
         int count;
 
@@ -308,5 +308,220 @@ fclose(file);
 freeList(l);
 return 0;
 
+}
+
+void writeToHeader(header *header, int file_id, int esc, int cols, int lines, int entry_x, int entry_y, int exit_x, int exit_y, int reserved, int counter, int solution_offset, int separator, int wall, int path)
+{
+        header->file_id=file_id;
+        header->esc=esc;
+        header->cols=cols;
+        header->lines=lines;
+        header->entry_x=entry_x;
+        header->entry_y=entry_y;
+        header->exit_x=exit_x;
+        header->exit_y=exit_y;
+        memset(header->reserved, 0, sizeof(header->reserved));
+        header->counter=counter;
+        header->solution_offset=solution_offset;
+        header->wall=wall;
+        header->path=path;
+}
+
+void writeSymbol(FILE *file, char value, int count, char separator) {
+    fwrite(&separator, sizeof(char), 1, file);
+    fwrite(&value, sizeof(char), 1, file);
+    fwrite(&count, sizeof(char), 1, file);
+}
+
+int lineNum(FILE *plik)
+{
+        if(plik==NULL)
+        {
+                printf("Plik to NULL\n");
+                return -1;
+        }
+
+        int n=0;
+        char buff[MAX_LINE_SIZE];
+        while(fgets(buff, MAX_LINE_SIZE, plik)!=NULL)
+        {
+                n++;
+        }
+        rewind(plik);
+        return n;
+}
+
+int colNum(FILE *plik)
+{
+        if(plik==NULL)
+        {
+                printf("Plik to NULL\n");
+                return -1;
+        }
+
+        int n=0;
+        char c;
+        while((c=getc(plik))!='\n')
+        {
+                n++;
+        }
+        rewind(plik);
+        return n;
+}
+
+int entry_x(FILE *plik)
+{
+        if(plik==NULL)
+        {
+                printf("Plik to NULL\n");
+                return -1;
+        }
+
+        char buff[MAX_LINE_SIZE];
+        while(fgets(buff, MAX_LINE_SIZE, plik)!=NULL)
+        {
+                for(int i=0;buff[i]!='\n';i++)
+                {
+                        if(buff[i]=='P')
+                        {
+                                rewind(plik);
+                                return i+1;
+                        }
+                }
+        }
+        rewind(plik);
+        return 0;
+}
+
+int entry_y(FILE *plik)
+{
+        if(plik==NULL)
+        {
+                printf("Plik to NULL\n");
+                return -1;
+        }
+        int y=0;
+        char buff[MAX_LINE_SIZE];
+        while(fgets(buff, MAX_LINE_SIZE, plik)!=NULL)
+        {
+                y++;
+                for(int i=0;buff[i]!='\n';i++)
+                {
+                        if(buff[i]=='P')
+                        {
+                                rewind(plik);
+                                return y;
+                        }
+                }
+        }
+        rewind(plik);
+        return 0;
+}
+
+int exit_x(FILE *plik)
+{
+        if(plik==NULL)
+        {
+                printf("Plik to NULL\n");
+                return -1;
+        }
+
+        char buff[MAX_LINE_SIZE];
+        while(fgets(buff, MAX_LINE_SIZE, plik)!=NULL)
+        {
+                for(int i=0;buff[i]!='\n';i++)
+                {
+                        if(buff[i]=='K')
+                        {
+                                rewind(plik);
+                                return i+1;
+                        }
+                }
+        }
+        rewind(plik);
+        return 0;
+}
+
+int exit_y(FILE *plik)
+{
+        if(plik==NULL)
+        {
+                printf("Plik to NULL\n");
+                return -1;
+        }
+
+        int y=0;
+        char buff[MAX_LINE_SIZE];
+        while(fgets(buff, MAX_LINE_SIZE, plik)!=NULL)
+        {
+                y++;
+                for(int i=0;buff[i]!='\n';i++)
+                {
+                        if(buff[i]=='K')
+                        {
+                                rewind(plik);
+                                return y;
+                        }
+                }
+        }
+        rewind(plik);
+        return 0;
+}
+
+int compressToBin(header *header, FILE *file_txt, FILE *out)
+{
+	if(out==NULL)
+	{
+		printf("Plik wyjściowy to NULL!\n");
+		return 1;
+	}
+        fwrite(&header->file_id, sizeof(int), 1, out);
+        fwrite(&header->esc, sizeof(char), 1, out);
+        fwrite(&header->cols, sizeof(short), 1, out);
+        fwrite(&header->lines, sizeof(short), 1, out);
+        fwrite(&header->entry_x, sizeof(short), 1, out);
+        fwrite(&header->entry_y, sizeof(short), 1, out);
+        fwrite(&header->exit_x, sizeof(short), 1, out);
+        fwrite(&header->exit_y, sizeof(short), 1, out);
+        fwrite(&header->reserved, 3*sizeof(int), 1, out);
+        fwrite(&header->counter, sizeof(int), 1, out);
+        fwrite(&header->solution_offset, sizeof(int), 1, out);
+        fwrite(&header->separator, sizeof(char), 1, out);
+        fwrite(&header->wall, sizeof(char), 1, out);
+        fwrite(&header->path, sizeof(char), 1, out);
+
+        char currentSymbol=0;
+        char prevSymbol=0;
+        int currentCount=0;
+        while ((currentSymbol = fgetc(file_txt)) != EOF) {
+        if(currentSymbol=='K' || currentSymbol=='P')
+           currentSymbol=' ';
+        if (currentSymbol == '\n'){
+           if(prevSymbol != 0) {
+              writeSymbol(out, prevSymbol, currentCount-1, header->separator);
+           }
+
+           currentCount = 0;
+           prevSymbol = 0;
+
+           continue;
+        }
+
+        if (currentSymbol == prevSymbol || prevSymbol == 0) {
+            currentCount++;
+        }
+        else {
+            writeSymbol(out, prevSymbol, currentCount-1, header->separator);
+            currentCount = 1;
+        }
+        prevSymbol = currentSymbol;
+        }
+
+        if (prevSymbol != 0 && currentCount > 0) {
+                writeSymbol(out, prevSymbol, currentCount-1, header->separator);
+        }
+	printf("Przetworzono format pliku na binarny\n");
+
+        return 0;
 }
 
