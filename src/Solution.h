@@ -1,15 +1,15 @@
 #ifndef MAZE_SOLUTION
 #define MAZE_SOLUTION
 
-typedef struct PathNode
-{
-    int node;
-    struct PathNode *next;
+typedef struct PathNode{
+
+	int node;
+	struct PathNode *next;
 }PathNode;
 
-typedef struct Path
-{
-        PathNode* top;
+typedef struct Path{
+
+	PathNode* top;
 }Path;
 
 PathNode *createPathNode(int node);

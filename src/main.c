@@ -7,11 +7,11 @@
 #include<stdlib.h>
 #include <unistd.h>
 #define HELP_PRINT() \
-printf("Rozwiązywanie labiryntu w formacie grafu\n");\
-printf("Opcje:\n");\
-printf("s - plik grafu opisującego labirynt\n");\
-printf("h - pomoc\n");\
-printf("a - algorytm: dfs, dijkstra, domyślnie - A*\n");\
+	printf("Rozwiązywanie labiryntu w formacie grafu\n");\
+	printf("Opcje:\n");\
+	printf("s - plik grafu opisującego labirynt\n");\
+	printf("h - pomoc\n");\
+	printf("a - algorytm: dfs, dijkstra, domyślnie - A*\n");\
 
 
 int main(int argc,char** argv){
@@ -21,32 +21,32 @@ int main(int argc,char** argv){
 	if(argc<2){
 		HELP_PRINT();
 	}
-	while((c=getopt(argc,argv,"hs:a:"))!=-1)
-	{
+	while((c=getopt(argc,argv,"hs:a:"))!=-1){
+
 
 		switch(c){
 
 			case 'h':{
-					HELP_PRINT();
+					 HELP_PRINT();
 					 break;
 				 }
 			case 's':
 				 {
 
-					graph_file=optarg;
-					break;
-					
+					 graph_file=optarg;
+					 break;
+
 
 				 }
 			case 'a':{
-					if(!strcmp(optarg,"dfs"))
-						solveFunction=solve;
-					else if(!strcmp(optarg,"dijkstra"))
-						solveFunction=dijkstraSolve;
-					
+					 if(!strcmp(optarg,"dfs"))
+						 solveFunction=solve;
+					 else if(!strcmp(optarg,"dijkstra"))
+						 solveFunction=dijkstraSolve;
+
 				 } 
 
-			
+
 		}
 
 
@@ -57,10 +57,10 @@ int main(int argc,char** argv){
 		Graph gr=createGraph(n);
 		printf("Wczytano graf\n");
 		if(readGraphFromFile(plik, gr)){
-			printf("Nie udało wczytać się grafu z pliku\n");
+			printf("Błąd: Nie udało wczytać się grafu z pliku\n");
 			return 1;
 		}
-		
+
 		Path *stack=NULL;
 		initPath(&stack);
 		(*solveFunction)(gr, stack);
@@ -74,7 +74,7 @@ int main(int argc,char** argv){
 
 
 
-	
 
-return 0;
+
+	return 0;
 }

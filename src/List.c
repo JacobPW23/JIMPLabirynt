@@ -7,7 +7,7 @@ List addToList(List l,unsigned int i){
 		List new;
 		if((new=malloc(sizeof(*new)))==NULL){
 			freeList(l);
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
 		}
 		new->i=i;
@@ -19,20 +19,20 @@ List addToList(List l,unsigned int i){
 	if(l->nxt==NULL){
 
 
-	
-	List new;
-	if((new=malloc(sizeof(*new)))==NULL){
-		freeList(l);
-		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
-		return NULL;
+
+		List new;
+		if((new=malloc(sizeof(*new)))==NULL){
+			freeList(l);
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
+			return NULL;
+		}
+		new->i=i;
+		new->nxt=NULL;
+		l->nxt=new;
+		return l;
 	}
-	new->i=i;
-	new->nxt=NULL;
-	l->nxt=new;
-	return l;
-	}
-	 l->nxt=addToList(l->nxt,i);	
- 	return l;	 
+	l->nxt=addToList(l->nxt,i);	
+	return l;	 
 }
 
 
@@ -53,9 +53,9 @@ List removeFromList(List l,unsigned int i){
 			free(exterminated);return l;
 		}
 
-	e=e->nxt;
+		e=e->nxt;
 	}
-return l;
+	return l;
 }
 
 
@@ -68,20 +68,20 @@ List getListElem(List l,unsigned int i){
 	}
 	return e;
 
-	}
-void freeList(List l){
-List tmp;
-while(l!=NULL){
-tmp=l;
-l=l->nxt;
-free(tmp);
 }
+void freeList(List l){
+	List tmp;
+	while(l!=NULL){
+		tmp=l;
+		l=l->nxt;
+		free(tmp);
+	}
 }
 void printList(List l){
-int i=0;
-while(l!=NULL){
-printf("Element numer %d : %d\n",i++,l->i);
-l=l->nxt;
-}
+	int i=0;
+	while(l!=NULL){
+		printf("Element numer %d : %d\n",i++,l->i);
+		l=l->nxt;
+	}
 
 }
