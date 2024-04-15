@@ -2,93 +2,93 @@
 #include <stdlib.h>
 #include "Solution.h"
 
-int initPath(Path **stack)
-{
-        *stack=malloc(sizeof(Path));
-        if(*stack==NULL)
-        {
-                printf("Nie udalo sie zainicjowac stosu\n");
-                return 1;
-        }
-        (*stack)->top=NULL;
-        return 0;
+int initPath(Path **stack){
+
+	*stack=malloc(sizeof(Path));
+	if(*stack==NULL){
+
+		printf("Błąd: Nie udalo sie zainicjowac stosu\n");
+		return 1;
+	}
+	(*stack)->top=NULL;
+	return 0;
 }
 
-int push(Path *stack, int node)
-{
-    PathNode *newPathNode=malloc(sizeof(PathNode));
-    if(newPathNode==NULL)
-    {
-        printf("Nie udalo sie zaalokowac pamieci na wezel\n");
-        return 1;
-    }
-    newPathNode->node=node;
-    newPathNode->next=stack->top;
-    stack->top=newPathNode;
+int push(Path *stack, int node){
 
-    return 0;
+	PathNode *newPathNode=malloc(sizeof(PathNode));
+	if(newPathNode==NULL){
+
+		printf("Błąd: Nie udalo sie zaalokowac pamieci na wezel\n");
+		return 1;
+	}
+	newPathNode->node=node;
+	newPathNode->next=stack->top;
+	stack->top=newPathNode;
+
+	return 0;
 }
 
-int pop(Path *stack)
-{
-    if(stack==NULL || stack->top==NULL)
-    {
-        printf("Stos jest pusty\n");
-        return 1;
-    }
+int pop(Path *stack){
 
-    PathNode *temp=stack->top;
-    stack->top=temp->next;
+	if(stack==NULL || stack->top==NULL){
 
-    free(temp);
-    return 0;
+		printf("Błąd:  Stos jest pusty\n");
+		return 1;
+	}
+
+	PathNode *temp=stack->top;
+	stack->top=temp->next;
+
+	free(temp);
+	return 0;
 }
 
-void reverse(Path *stack)
-{
-        if(stack->top!=NULL)
-        {
-                int temp=stack->top->node;
-                pop(stack);
-                reverse(stack);
+void reverse(Path *stack){
 
-                insertAtBottom(stack, temp);
-        }
+	if(stack->top!=NULL){
+
+		int temp=stack->top->node;
+		pop(stack);
+		reverse(stack);
+
+		insertAtBottom(stack, temp);
+	}
 }
 
-void insertAtBottom(Path *stack, int node)
-{
-        if(stack->top==NULL)
-                push(stack, node);
-        else
-        {
-                int temp = stack->top->node;
-                pop(stack);
-                insertAtBottom(stack, node);
+void insertAtBottom(Path *stack, int node){
 
-                push(stack, temp);
+	if(stack->top==NULL)
+		push(stack, node);
+	else{
 
-        }
+		int temp = stack->top->node;
+		pop(stack);
+		insertAtBottom(stack, node);
+
+		push(stack, temp);
+
+	}
 }
 
-void printPath(Path *stack)
-{
-        PathNode *temp=stack->top;
-        while(temp!=NULL)
-        {
-                printf("%d\n", temp->node);
-                temp=temp->next;
-        }
+void printPath(Path *stack){
+
+	PathNode *temp=stack->top;
+	while(temp!=NULL){
+
+		printf("%d\n", temp->node);
+		temp=temp->next;
+	}
 }
 
-void freePath(Path *stack)
-{
-        while(stack->top!=NULL)
-        {
-                PathNode *temp=stack->top;
-                stack->top=stack->top->next;
-                free(temp);
-        }
+void freePath(Path *stack){
+
+	while(stack->top!=NULL){
+
+		PathNode *temp=stack->top;
+		stack->top=stack->top->next;
+		free(temp);
+	}
 	free(stack);
 }
 

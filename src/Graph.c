@@ -7,21 +7,21 @@
 Graph initGraph(void){
 	Graph g;
 	if((g=malloc(sizeof *g))==NULL){
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+		fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
 
 	}
 	if((g->coords=malloc(20*sizeof (*g->coords)))==NULL){
-  		free(g);
-		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
-  		return NULL;
+		free(g);
+		fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
+		return NULL;
 
 	}
 
 	if((g->neighbors=malloc(10*sizeof (*g->neighbors)))==NULL){
 		free(g->coords);
 		free(g);
-		fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+		fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 		return NULL;
 	}
 	g->n=0;
@@ -36,7 +36,7 @@ Graph initGraph(void){
 			free(g->neighbors);
 			free(g->coords);
 			free(g);
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return NULL;
 		}
 
@@ -57,14 +57,14 @@ Graph createGraph(int n)
 	Graph gr=malloc(sizeof(*gr));
 	if(gr==NULL)
 	{
-		fprintf(stderr, "Błąd: Nie udało się stworzyć grafu\n");
+		fprintf(stderr, "Błąd:  Nie udało się stworzyć grafu\n");
 		return NULL;
 	}
 	gr->n=n;
 	gr->size=n;
 	if((gr->coords=malloc(2*n*sizeof*gr->coords))==NULL){
 		free(gr);
-		fprintf(stderr, "Błąd: Nie udało się zaalokować pamięci na współrzędne\n");
+		fprintf(stderr, "Błąd:  Nie udało się zaalokować pamięci na współrzędne\n");
 
 	}
 	gr->neighbors=malloc(n*sizeof*gr->neighbors);
@@ -72,7 +72,7 @@ Graph createGraph(int n)
 	{
 		free(gr->coords);
 		free(gr);
-		fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów\n");
+		fprintf(stderr, "Błąd: Nie udało się zaalokować pamięci na sąsiadów\n");
 		return NULL;
 	}
 	for(int i=0;i<n;i++)
@@ -85,11 +85,11 @@ Graph createGraph(int n)
 			free(gr->neighbors);
 			free(gr->coords);
 			free(gr);
-			fprintf(stderr, "Nie udało się zaalokować pamięci na sąsiadów wierzchołka\n");
+			fprintf(stderr, "Błąd: Nie udało się zaalokować pamięci na sąsiadów wierzchołka\n");
 			return NULL;
 		}
 	}
-	
+
 	return gr;	
 }
 
@@ -105,13 +105,13 @@ int initNeighborTable(Graph g,int begin,int end){
 			free(g->neighbors);
 			free(g->coords);
 			free(g);
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 		}
 
 
 	}
-for(int i=begin;i<end;i++)
+	for(int i=begin;i<end;i++)
 		memset(g->neighbors[i],-1,4*sizeof(int));
 	return 0;
 
@@ -131,7 +131,7 @@ int establishNeighborhood(Graph g,int i,int n){
 
 		g->neighbors[i][j]=n;
 	}
-		for(j=0;g->neighbors[n][j]!=-1;j++);
+	for(j=0;g->neighbors[n][j]!=-1;j++);
 	if(g->neighbors[n][j]!=-1){
 		return 1;
 	}
@@ -139,7 +139,7 @@ int establishNeighborhood(Graph g,int i,int n){
 
 		g->neighbors[n][j]=i;	
 	}	
-return 0;
+	return 0;
 
 }
 
@@ -155,17 +155,17 @@ int addVert(Graph g,int x,int y){
 	else{
 		if((g->coords=realloc(g->coords,4*g->size*sizeof (*g->coords)))==NULL){
 			freeGraph(g);
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
-				}
+		}
 		if((g->neighbors=realloc(g->neighbors,2*g->size*sizeof (*g->neighbors)))==NULL){
 			freeGraph(g);
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
-				}
+		}
 		if(initNeighborTable(g,g->size,g->size*2)==1){
 			freeGraph(g);
-			fprintf(stderr,"Błąd 2 Zabrakło pamięci na rozwiązanie labiryntu\n");
+			fprintf(stderr,"Błąd: Zabrakło pamięci na rozwiązanie labiryntu\n");
 			return 1;
 		}
 		g->size*=2;
@@ -180,12 +180,12 @@ int addVert(Graph g,int x,int y){
 
 
 void freeGraph(Graph g){
-       free(g->coords);
-       for(int i=0;i<g->size;i++){
- 		 free(g->neighbors[i]);
- 	}
- 	free(g->neighbors);
- 	free(g);
+	free(g->coords);
+	for(int i=0;i<g->size;i++){
+		free(g->neighbors[i]);
+	}
+	free(g->neighbors);
+	free(g);
 }
 
 
@@ -198,7 +198,7 @@ int browseBuforedNumber(List l,Graph g,int x){
 			return tmp->i;
 		}
 		tmp=tmp->nxt;
-	
+
 	}
 	return -1;
 
@@ -213,8 +213,8 @@ void printGraph(Graph g){
 		printf("Cords: %d %d \n",g->coords[2*i],g->coords[(2*i)+1]);
 		printf("Neighbors: ");
 		for(int j=0;g->neighbors[i][j]!=-1 && j<4;j++){
-		printf("%d ",g->neighbors[i][j]);
-	
+			printf("%d ",g->neighbors[i][j]);
+
 		}
 		printf("\n\n");
 
