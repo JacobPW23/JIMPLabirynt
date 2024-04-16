@@ -53,14 +53,17 @@ int main(int argc,char** argv){
 	}
 	if(graph_file!=NULL){
 		FILE* plik=fopen(graph_file,"r");
+		if(plik==NULL){
+			printf("Błąd: Nie udało otworzyć się pliku lub plik nie istnieje\n");
+			return 1;
+		}
 		int n=vertNum(plik);
 		Graph gr=createGraph(n);
-		printf("Wczytano graf\n");
 		if(readGraphFromFile(plik, gr)){
 			printf("Błąd: Nie udało wczytać się grafu z pliku\n");
 			return 1;
 		}
-
+		printf("Wczytano graf\n");
 		Path *stack=NULL;
 		initPath(&stack);
 		(*solveFunction)(gr, stack);
