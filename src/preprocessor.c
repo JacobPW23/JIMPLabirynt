@@ -10,6 +10,7 @@
 	printf("-m - nazwa pliku z labiryntem w formacie pierwotnym (bez rozszerzenia)\n");\
 	printf("-f - nazwa pliku zawierającego graf opisujący labirynt\n");\
 	printf("-c - wskazuje,że plik podany w parametrze m jest skompresowany do RLE8\n");\
+	printf("-d - skompresuj plik tekstowy do formatu .bin\n");\
 	printf("-h - pomoc\n");
 
 int main(int argc,char** argv){
