@@ -43,6 +43,12 @@ int main(int argc,char** argv){
 						 solveFunction=solve;
 					 else if(!strcmp(optarg,"dijkstra"))
 						 solveFunction=dijkstraSolve;
+					 else if(!strcmp(optarg,"A*"))
+						 solveFunction=astarSolve;
+					 else{
+						 printf("Błąd: Nie znany algorytm\n");
+						 return 1;
+					 }
 
 				 } 
 
