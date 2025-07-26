@@ -6,7 +6,7 @@
 #define CROSSCODE 184
 #define TURNCODE 240
 #define DEADENDCODE 296
-#define MAX_LINE_SIZE 2050
+#define MAX_LINE_SIZE 2054
 
 int validFile(FILE * file){
 	char buff [MAX_LINE_SIZE];int x=1;
